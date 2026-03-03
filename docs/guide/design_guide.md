@@ -66,6 +66,7 @@ Whenever you create a new distinct visual section of the app that needs a title,
 ## 4. Common UI Element Patterns
 
 - **Buttons**: Do not let buttons capitalize automatically! Set `textTransform: 'none'`.
+- **Skeleton UI**: When showing loading states, the Skeleton UI's layout, margins, paddings, and sizes must exactly match the actual loaded content to prevent layout shifts (vertical/horizontal jumping) when the real data renders.
 - **Cards & Surfaces**: Use a tiny shadow (`elevation={1}`) by default. For mobile, it sometimes looks better entirely flat (`elevation={0}`). The standard corner roundness (border-radius) is `2` (8px).
 - **Hover Effects**: When users hover over links or buttons, there should be a subtle effect (like a faint background appearing or slightly lifting the card).
 - **Icons**: Always stick to the official Material UI icon set (`@mui/icons-material`), such as `<SearchIcon />`.

@@ -17,15 +17,38 @@ interface RecommendedTalksProps {
 const RecommendedTalks: React.FC<RecommendedTalksProps> = ({ loading, error, talks, books }) => {
   if (loading) {
     return (
-      <List>
+      <List sx={{ py: 0 }}>
         {Array.from(new Array(6)).map((_, index) => (
-          <ListItem key={index} disablePadding>
-            <Box sx={{ width: '100%', display: 'flex', alignItems: 'center', py: 1 }}>
-              <Skeleton variant="rectangular" width={50} height={75} sx={{ mr: 2, borderRadius: 1 }} />
-              <Box sx={{ flexGrow: 1 }}>
-                <Skeleton width="60%" />
-                <Skeleton width="40%" />
+          <ListItem key={index} disablePadding sx={{ mb: 1.5 }}>
+            <Box
+              sx={{
+                width: '100%',
+                display: 'flex',
+                alignItems: 'center',
+                borderRadius: 2,
+                border: '1px solid',
+                borderColor: 'divider',
+                p: { xs: 1.5, sm: 2 },
+              }}
+            >
+              <Box sx={{ mr: { xs: 1, sm: 2 } }}>
+                <Skeleton variant="rectangular" width={50} height={75} sx={{ borderRadius: 1 }} />
               </Box>
+              <Box sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column', gap: 0.5 }}>
+                <Skeleton variant="text" width="60%" height={28} />
+                <Skeleton variant="text" width="30%" height={20} />
+                <Skeleton variant="text" width="80%" height={20} />
+              </Box>
+              <Stack direction="row" spacing={1.5} sx={{ ml: 2, alignItems: 'center', display: { xs: 'none', sm: 'flex' } }}>
+                <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                  <Skeleton variant="circular" width={16} height={16} sx={{ mr: 0.5 }} />
+                  <Skeleton variant="text" width={16} />
+                </Box>
+                <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                  <Skeleton variant="circular" width={16} height={16} sx={{ mr: 0.5 }} />
+                  <Skeleton variant="text" width={16} />
+                </Box>
+              </Stack>
             </Box>
           </ListItem>
         ))}
