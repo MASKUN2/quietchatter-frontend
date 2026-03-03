@@ -54,7 +54,7 @@ const TOOLTIP_STEPS: TooltipStep[] = [
 ];
 
 /** 각 툴팁이 화면에 표시되는 시간 (ms) */
-const DISPLAY_DURATION_MS = 4000;
+const DISPLAY_DURATION_MS = 6000;
 /** 다음 툴팁이 나타나기 전 대기 시간 (ms) */
 const GAP_BETWEEN_MS = 500;
 

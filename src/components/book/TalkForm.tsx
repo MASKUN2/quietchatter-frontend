@@ -16,7 +16,7 @@ interface TalkFormProps {
 }
 
 /** 북톡이 자동 숨김된다는 안내 툴팁의 표시 시간 (ms) */
-const TALK_ONBOARDING_DISPLAY_MS = 4000;
+const TALK_ONBOARDING_DISPLAY_MS = 10000;
 
 const TalkForm: React.FC<TalkFormProps> = ({ content, setContent, onSubmit, nickname, isGuest = false, onLoginClick }) => {
   const d = new Date();
