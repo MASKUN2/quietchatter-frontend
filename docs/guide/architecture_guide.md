@@ -71,4 +71,4 @@ We keep state management as simple and standard as possible:
 - **No Inline Fetching**: API call logic (using Axios or Fetch) should **never** be written directly inside components. 
 - **Use the API Layer**: Import and use the helper functions explicitly defined in `src/api/api.ts`.
 - **Use Custom Hooks**: Complex data fetching logic (e.g., infinite scroll, debouncing searches) should be wrapped in individual custom hooks within the `src/hooks/` folder.
-- **Error Handling**: When a background network request fails, always provide appropriate feedback to the user (e.g., an Alert or Toast message). For business logic errors, usually show the message sent from the backend as it is.
+- **Error Handling**: When a background network request fails, always provide appropriate feedback to the user using the global Toast system. **Never use native browser `alert()` popups**. Instead, import `useToast` from `@/hooks/useToast` and call `showToast('message', 'error')`. For business logic errors, usually show the message sent from the backend as it is.

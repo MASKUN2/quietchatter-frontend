@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Card, CardContent, Typography, Box, Button, TextField, IconButton, Stack, Tooltip, Avatar } from '@mui/material';
+import { Card, CardContent, Typography, Box, Button, IconButton, Stack, Tooltip, Avatar } from '@mui/material';
 import { Link } from 'react-router-dom';
 import ThumbUpAltIcon from '@mui/icons-material/ThumbUpAlt';
 import FavoriteIcon from '@mui/icons-material/Favorite';
@@ -10,6 +10,8 @@ import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { updateTalk, deleteTalk } from '../../api/api';
 import type { Talk } from '../../types';
+import CharacterLimitedTextField from '../common/CharacterLimitedTextField';
+import { useToast } from '../../hooks/useToast';
 
 interface TalkItemProps {
   talk: Talk;
@@ -28,6 +30,7 @@ const TalkItem: React.FC<TalkItemProps> = ({ talk, onReaction, currentMemberId, 
   const [isEditing, setIsEditing] = useState(false);
   const [editContent, setEditContent] = useState(talk.content);
   const [loading, setLoading] = useState(false);
+  const { showToast } = useToast();
 
   const isMine = currentMemberId && String(talk.memberId) === String(currentMemberId);
 
@@ -44,9 +47,9 @@ const TalkItem: React.FC<TalkItemProps> = ({ talk, onReaction, currentMemberId, 
       onUpdate();
     } catch (error: unknown) {
       if (error instanceof Error) {
-        alert(error.message);
+        showToast(error.message, 'error');
       } else {
-        alert('수정에 실패했습니다.');
+        showToast('수정에 실패했습니다.', 'error');
       }
     } finally {
       setLoading(false);
@@ -59,12 +62,13 @@ const TalkItem: React.FC<TalkItemProps> = ({ talk, onReaction, currentMemberId, 
     setLoading(true);
     try {
       await deleteTalk(talk.id);
+      showToast('성공적으로 삭제되었습니다.', 'success');
       onUpdate();
     } catch (error: unknown) {
       if (error instanceof Error) {
-        alert(error.message);
+        showToast(error.message, 'error');
       } else {
-        alert('삭제에 실패했습니다.');
+        showToast('삭제에 실패했습니다.', 'error');
       }
       setLoading(false);
     }
@@ -117,12 +121,13 @@ const TalkItem: React.FC<TalkItemProps> = ({ talk, onReaction, currentMemberId, 
 
         {isEditing ? (
           <Box sx={{ mb: 2 }}>
-            <TextField
+            <CharacterLimitedTextField
               fullWidth
               multiline
               rows={3}
+              maxLength={250}
               value={editContent}
-              onChange={(e) => setEditContent(e.target.value)}
+              onChange={(e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => setEditContent(e.target.value)}
               disabled={loading}
               sx={{ mb: 1 }}
               slotProps={{ htmlInput: { style: { fontSize: '1rem' } } }}

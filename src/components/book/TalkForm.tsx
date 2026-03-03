@@ -1,7 +1,8 @@
 import React from 'react';
-import { TextField, Box, Button, Typography, Stack, Tooltip } from '@mui/material';
+import { Box, Button, Typography, Stack, Tooltip } from '@mui/material';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
+import CharacterLimitedTextField from '../common/CharacterLimitedTextField';
 
 interface TalkFormProps {
   content: string;
@@ -43,18 +44,19 @@ const TalkForm: React.FC<TalkFormProps> = ({ content, setContent, onSubmit, nick
       </Stack>
 
       <form onSubmit={onSubmit}>
-        <TextField
+        <CharacterLimitedTextField
           fullWidth
           multiline
           rows={3}
+          maxLength={250}
           placeholder={isGuest ? "톡을 남기려면 로그인이 필요합니다." : "이 책에 대한 생각을 자유롭게 남겨주세요."}
           value={content}
-          onChange={(e) => setContent(e.target.value)}
+          onChange={(e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => setContent(e.target.value)}
           variant="outlined"
           disabled={isGuest}
-          sx={{ mb: 2, bgcolor: isGuest ? 'grey.100' : 'white' }}
+          sx={{ mb: 1, bgcolor: isGuest ? 'grey.100' : 'white' }}
         />
-        <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
+        <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 1 }}>
           {isGuest ? (
             <Button
               type="button"
