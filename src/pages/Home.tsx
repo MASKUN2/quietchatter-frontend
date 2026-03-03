@@ -5,9 +5,13 @@ import RecommendedTalks from '../components/home/RecommendedTalks';
 import UpdateLog from '../components/home/UpdateLog';
 import RecommendedTalksTimer from '../components/home/RecommendedTalksTimer';
 import { useHomeData } from '../hooks/useHomeData';
+import { useOnboardingRefs } from '../context/OnboardingContext';
 
 const Home: React.FC = () => {
   const { talks, books, loading, isRefreshing, refreshData, error } = useHomeData();
+
+  // timerRef를 context에서 가져와 RecommendedTalksTimer 컨테이너에 부착합니다.
+  const { timerRef } = useOnboardingRefs();
 
   return (
     <Stack spacing={{ xs: 2, md: 4 }}>
@@ -30,11 +34,13 @@ const Home: React.FC = () => {
             </Typography>
           </Box>
           {!loading && !error && (
-            <RecommendedTalksTimer
-              onRefresh={refreshData}
-              isRefreshing={isRefreshing}
-              intervalMs={45000}
-            />
+            <Box ref={timerRef} sx={{ display: 'inline-flex' }}>
+              <RecommendedTalksTimer
+                onRefresh={refreshData}
+                isRefreshing={isRefreshing}
+                intervalMs={45000}
+              />
+            </Box>
           )}
         </Box>
         <RecommendedTalks
@@ -46,7 +52,7 @@ const Home: React.FC = () => {
       </PagePaper>
 
       <UpdateLog />
-    </Stack>
+    </Stack >
   );
 };
 

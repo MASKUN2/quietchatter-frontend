@@ -11,12 +11,18 @@ import SearchIcon from '@mui/icons-material/Search';
 import MenuIcon from '@mui/icons-material/Menu';
 import AccountCircle from '@mui/icons-material/AccountCircle';
 import { useAuth } from '../../context/AuthContext';
+import HomeOnboarding from '../home/HomeOnboarding';
+import { useOnboardingRefs } from '../../context/OnboardingContext';
 
 const Header: React.FC = () => {
   const [keyword, setKeyword] = useState('');
   const { member, loading, logout } = useAuth();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [toastOpen, setToastOpen] = useState(false);
+
+  // ── 온보딩 툴팁용 refs (OnboardingContext에서 읽음) ───────────────────
+  const { logoRef, searchRef, vocRef, loginRef } = useOnboardingRefs();
+  // ──────────────────────────────────────────────────────────────────────
 
   const navigate = useNavigate();
   const theme = useTheme();
@@ -59,12 +65,14 @@ const Header: React.FC = () => {
     // 로그인하지 않은 사용자(또는 로딩 실패 시)에게 로그인 버튼 노출
     if (!member || !member.isLoggedIn) {
       return (
-        <NaverLogin height={32} />
+        <Box ref={loginRef} sx={{ display: 'inline-flex' }}>
+          <NaverLogin height={32} />
+        </Box>
       );
     }
 
     return (
-      <Box sx={{ display: 'flex', alignItems: 'center', gap: { xs: 0.5, sm: 1.5 } }}>
+      <Box ref={loginRef} sx={{ display: 'flex', alignItems: 'center', gap: { xs: 0.5, sm: 1.5 } }}>
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
           <AccountCircle fontSize="small" color="action" />
           <Typography variant="body2" sx={{ fontWeight: 600, color: 'text.primary' }}>
@@ -122,7 +130,10 @@ const Header: React.FC = () => {
         }}
       >
         <Box sx={{ display: 'flex', alignItems: 'center' }}>
-          <VoiceOfCustomerModal />
+          {/* VOC 버튼 영역 — 온보딩 ref 부착 */}
+          <Box ref={vocRef} sx={{ display: 'inline-flex' }}>
+            <VoiceOfCustomerModal />
+          </Box>
         </Box>
         <Box sx={{ display: 'flex', alignItems: 'center' }}>
           {renderMemberInfo()}
@@ -141,7 +152,8 @@ const Header: React.FC = () => {
           borderBottom: isMobile ? '1px solid #eee' : 'none'
         }}
       >
-        <Box sx={{ mb: 2 }}>
+        {/* 로고 — 온보딩 ref 부착 */}
+        <Box sx={{ mb: 2 }} ref={logoRef}>
           <a href="/home" onClick={(e) => { e.preventDefault(); navigate('/home'); }} style={{ display: 'inline-block' }}>
             <img
               alt="Quiet Chatter Icon"
@@ -152,24 +164,27 @@ const Header: React.FC = () => {
         </Box>
         <form onSubmit={handleSearch}>
           <Box sx={{ display: 'flex', gap: 1, maxWidth: 600, mx: 'auto' }}>
-            <TextField
-              fullWidth
-              variant="outlined"
-              placeholder="검색어를 입력하세요"
-              value={keyword}
-              onChange={(e) => setKeyword(e.target.value)}
-              required
-              slotProps={{
-                input: {
-                  startAdornment: (
-                    <InputAdornment position="start">
-                      <SearchIcon />
-                    </InputAdornment>
-                  ),
-                },
-              }}
-              sx={{ bgcolor: 'white', borderRadius: 1 }}
-            />
+            {/* 검색창 — 온보딩 ref 부착 */}
+            <Box ref={searchRef} sx={{ flex: 1 }}>
+              <TextField
+                fullWidth
+                variant="outlined"
+                placeholder="관심있는 책이나 작가를 찾아보세요"
+                value={keyword}
+                onChange={(e) => setKeyword(e.target.value)}
+                required
+                slotProps={{
+                  input: {
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <SearchIcon />
+                      </InputAdornment>
+                    ),
+                  },
+                }}
+                sx={{ bgcolor: 'white', borderRadius: 1 }}
+              />
+            </Box>
             <Button
               type="submit"
               variant="outlined"
@@ -188,9 +203,11 @@ const Header: React.FC = () => {
               }}
             >
               검색
-            </Button>          </Box>
+            </Button>
+          </Box>
         </form>
       </Paper>
+
       <Snackbar
         open={toastOpen}
         autoHideDuration={3000}
@@ -201,6 +218,12 @@ const Header: React.FC = () => {
           로그아웃 되었습니다.
         </Alert>
       </Snackbar>
+
+      {/* ── 온보딩 툴팁 오케스트레이터 ────────────────────────────────────
+           Context에서 refs를 읽으므로 props 없이 사용합니다.
+           timerRef는 Home.tsx에서 직접 context에 등록됩니다.
+      ──────────────────────────────────────────────────────────────────── */}
+      <HomeOnboarding />
     </Box>
   );
 };

@@ -1,3 +1,13 @@
+# [1.4.0](https://github.com/MASKUN2/quiet-chatter-front-end/compare/v1.3.0...v1.4.0) (2026-03-03)
+
+
+### Features
+
+* **book:** Add character limit and Toast notifications ([9d8c83e](https://github.com/MASKUN2/quiet-chatter-front-end/commit/9d8c83ee191445c3b4353be42c6ec62688815ccd))
+* **core:** Add React Error Boundary and GlobalErrorFallback ([a835d35](https://github.com/MASKUN2/quiet-chatter-front-end/commit/a835d35fda2384ac9bd38750d8f373588da7838f))
+* **onboarding:** Add first-visit tooltip system for homepage and book detail ([a646b68](https://github.com/MASKUN2/quiet-chatter-front-end/commit/a646b6822a5e50fb00cf61ff3287d48073ea30e1))
+* update search input placeholder to suggest searching for books or authors. [skip ci] ([2424485](https://github.com/MASKUN2/quiet-chatter-front-end/commit/2424485d3fa490ab19a01204c01a545d96543db5))
+
 # [1.3.0](https://github.com/MASKUN2/quiet-chatter-front-end/compare/v1.2.0...v1.3.0) (2026-02-27)
 
 

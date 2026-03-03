@@ -8,7 +8,8 @@ This document explains the colors, text styles, spacing rules, and UI component 
 
 - **Anonymity and Relaxing Tone**: Keep colors and styles calm so users feel comfortable participating without burden.
 - **Easy to Read**: Since this is a text-centric BookTalk service, highly readable fonts and ample whitespace are top priorities.
-- **Mobile First Optimization**: Because many users are on phones, all individual pieces of the UI must look perfect on mobile first!
+- **Mobile First Optimization**: Because many users are on phones, all individual pieces of the UI must look perfect on mobile first! 
+  - *Text Truncation Rule*: Do not manually truncate display text (e.g., `substring(0, 5) + '...'`) just because it is a mobile viewport. If text might be long (like nicknames or titles), either allow it to wrap naturally or use CSS `textOverflow: 'ellipsis'` so the browser handles truncation responsively based on available space.
 
 ## 2. Color Palette System
 
@@ -65,6 +66,7 @@ Whenever you create a new distinct visual section of the app that needs a title,
 ## 4. Common UI Element Patterns
 
 - **Buttons**: Do not let buttons capitalize automatically! Set `textTransform: 'none'`.
+- **Skeleton UI**: When showing loading states, the Skeleton UI's layout, margins, paddings, and sizes must exactly match the actual loaded content to prevent layout shifts (vertical/horizontal jumping) when the real data renders.
 - **Cards & Surfaces**: Use a tiny shadow (`elevation={1}`) by default. For mobile, it sometimes looks better entirely flat (`elevation={0}`). The standard corner roundness (border-radius) is `2` (8px).
 - **Hover Effects**: When users hover over links or buttons, there should be a subtle effect (like a faint background appearing or slightly lifting the card).
 - **Icons**: Always stick to the official Material UI icon set (`@mui/icons-material`), such as `<SearchIcon />`.

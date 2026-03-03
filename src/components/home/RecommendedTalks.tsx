@@ -6,6 +6,7 @@ import ThumbUpAltIcon from '@mui/icons-material/ThumbUpAlt';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import type { Talk, Book } from '../../types';
+import { useOnboardingRefs } from '../../context/OnboardingContext';
 
 interface RecommendedTalksProps {
   loading: boolean;
@@ -15,17 +16,42 @@ interface RecommendedTalksProps {
 }
 
 const RecommendedTalks: React.FC<RecommendedTalksProps> = ({ loading, error, talks, books }) => {
+  const { recommendedTalkRef } = useOnboardingRefs();
+
   if (loading) {
     return (
-      <List>
+      <List sx={{ py: 0 }}>
         {Array.from(new Array(6)).map((_, index) => (
-          <ListItem key={index} disablePadding>
-            <Box sx={{ width: '100%', display: 'flex', alignItems: 'center', py: 1 }}>
-              <Skeleton variant="rectangular" width={50} height={75} sx={{ mr: 2, borderRadius: 1 }} />
-              <Box sx={{ flexGrow: 1 }}>
-                <Skeleton width="60%" />
-                <Skeleton width="40%" />
+          <ListItem key={index} disablePadding sx={{ mb: 1.5 }}>
+            <Box
+              sx={{
+                width: '100%',
+                display: 'flex',
+                alignItems: 'center',
+                borderRadius: 2,
+                border: '1px solid',
+                borderColor: 'divider',
+                p: { xs: 1.5, sm: 2 },
+              }}
+            >
+              <Box sx={{ mr: { xs: 1, sm: 2 } }}>
+                <Skeleton variant="rectangular" width={50} height={75} sx={{ borderRadius: 1 }} />
               </Box>
+              <Box sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column', gap: 0.5 }}>
+                <Skeleton variant="text" width="60%" height={28} />
+                <Skeleton variant="text" width="30%" height={20} />
+                <Skeleton variant="text" width="80%" height={20} />
+              </Box>
+              <Stack direction="row" spacing={1.5} sx={{ ml: 2, alignItems: 'center', display: { xs: 'none', sm: 'flex' } }}>
+                <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                  <Skeleton variant="circular" width={16} height={16} sx={{ mr: 0.5 }} />
+                  <Skeleton variant="text" width={16} />
+                </Box>
+                <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                  <Skeleton variant="circular" width={16} height={16} sx={{ mr: 0.5 }} />
+                  <Skeleton variant="text" width={16} />
+                </Box>
+              </Stack>
             </Box>
           </ListItem>
         ))}
@@ -38,13 +64,13 @@ const RecommendedTalks: React.FC<RecommendedTalksProps> = ({ loading, error, tal
 
   return (
     <List sx={{ py: 0 }}>
-      {talks.map(talk => {
+      {talks.map((talk, index) => {
         const book = books.get(talk.bookId);
         if (!book) return null;
         const truncatedContent = talk.content.length > 100 ? talk.content.substring(0, 100) + '...' : talk.content;
 
-        return (
-          <ListItem key={talk.id} disablePadding sx={{ mb: 1.5 }}>
+        const cardContent = (
+          <ListItem disablePadding sx={{ mb: 1.5 }}>
             <ListItemButton
               component={Link}
               to={`/books/${book.id}`}
@@ -97,6 +123,18 @@ const RecommendedTalks: React.FC<RecommendedTalksProps> = ({ loading, error, tal
             </ListItemButton>
           </ListItem>
         );
+
+        // 첫 번째 카드에만 recommendedTalkRef를 부착한 Box를 감쌉니다 (온보딩 툴팁 anchor).
+        // plain div인 Box는 HTMLElement ref를 타입 제약 없이 받을 수 있습니다.
+        if (index === 0) {
+          return (
+            <Box key={talk.id} ref={recommendedTalkRef}>
+              {cardContent}
+            </Box>
+          );
+        }
+
+        return <React.Fragment key={talk.id}>{cardContent}</React.Fragment>;
       })}
     </List>
   );

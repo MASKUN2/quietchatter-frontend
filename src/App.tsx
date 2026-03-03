@@ -15,6 +15,7 @@ import ScrollToTop from './components/common/ScrollToTop';
 import MyPage from './pages/MyPage/MyPage';
 import ProfileEditPage from './pages/MyPage/ProfileEditPage';
 import { AuthProvider } from './context/AuthContext';
+import { OnboardingProvider, useOnboardingRefsState } from './context/OnboardingContext';
 import { Container, Stack, useTheme, useMediaQuery } from '@mui/material';
 
 const theme = createTheme({
@@ -84,42 +85,53 @@ const theme = createTheme({
 const AppContent: React.FC = () => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+  const onboardingRefs = useOnboardingRefsState();
 
   return (
-    <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
-      <Container maxWidth="md" disableGutters={isMobile} sx={{ flexGrow: 1 }}>
-        <Stack spacing={{ xs: 2, md: 4 }} sx={{ py: { xs: 0, md: 2 }, height: '100%' }}>
-          <Header />
-          <Box component="main" sx={{ flexGrow: 1 }}>
-            <Routes>
-              <Route path="/" element={<Navigate to="/home" replace />} />
-              <Route path="/home" element={<Home />} />
-              <Route path="/books/search" element={<BookSearch />} />
-              <Route path="/books/:bookId" element={<BookDetail />} />
-              <Route path="/auth/login/naver/callback" element={<NaverCallback />} />
-              <Route path="/mypage" element={<MyPage />} />
-              <Route path="/mypage/profile" element={<ProfileEditPage />} />
-              <Route path="/terms" element={<TermsOfService />} />
-              <Route path="/about" element={<AboutService />} />
-            </Routes>
-          </Box>
-        </Stack>
-      </Container>
-      <Footer />
-    </Box>
+    <OnboardingProvider refs={onboardingRefs}>
+      <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
+        <Container maxWidth="md" disableGutters={isMobile} sx={{ flexGrow: 1 }}>
+          <Stack spacing={{ xs: 2, md: 4 }} sx={{ py: { xs: 0, md: 2 }, height: '100%' }}>
+            <Header />
+            <Box component="main" sx={{ flexGrow: 1 }}>
+              <Routes>
+                <Route path="/" element={<Navigate to="/home" replace />} />
+                <Route path="/home" element={<Home />} />
+                <Route path="/books/search" element={<BookSearch />} />
+                <Route path="/books/:bookId" element={<BookDetail />} />
+                <Route path="/auth/login/naver/callback" element={<NaverCallback />} />
+                <Route path="/mypage" element={<MyPage />} />
+                <Route path="/mypage/profile" element={<ProfileEditPage />} />
+                <Route path="/terms" element={<TermsOfService />} />
+                <Route path="/about" element={<AboutService />} />
+              </Routes>
+            </Box>
+          </Stack>
+        </Container>
+        <Footer />
+      </Box>
+    </OnboardingProvider>
   );
 };
+
+import { ToastProvider } from './providers/ToastProvider';
+import { ErrorBoundary } from 'react-error-boundary';
+import GlobalErrorFallback from './components/common/GlobalErrorFallback';
 
 const App: React.FC = () => {
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      <AuthProvider>
-        <Router>
-          <ScrollToTop />
-          <AppContent />
-        </Router>
-      </AuthProvider>
+      <ToastProvider>
+        <AuthProvider>
+          <ErrorBoundary FallbackComponent={GlobalErrorFallback}>
+            <Router>
+              <ScrollToTop />
+              <AppContent />
+            </Router>
+          </ErrorBoundary>
+        </AuthProvider>
+      </ToastProvider>
     </ThemeProvider>
   );
 };

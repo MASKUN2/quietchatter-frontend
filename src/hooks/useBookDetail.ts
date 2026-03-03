@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { getBookDetails, getTalks, postTalk, handleReaction } from '../api/api';
 import type { Book, Talk, PageInfo } from '../types';
 import { useAuth } from '../context/AuthContext';
+import { useToast } from '../hooks/useToast';
 import { MESSAGES } from '../constants';
 
 export const useBookDetail = (bookId: string | undefined) => {
@@ -9,12 +10,13 @@ export const useBookDetail = (bookId: string | undefined) => {
   const [talks, setTalks] = useState<Talk[]>([]);
   const [pageInfo, setPageInfo] = useState<PageInfo | null>(null);
   const { member, refreshMember } = useAuth();
+  const { showToast } = useToast();
   const [loadingBook, setLoadingBook] = useState(true);
   const [loadingTalks, setLoadingTalks] = useState(true);
-  
+
   // Talk Form State
   const [talkContent, setTalkContent] = useState('');
-  
+
   // Current Talk Page
   const [talkPage, setTalkPage] = useState(0);
 
@@ -33,7 +35,7 @@ export const useBookDetail = (bookId: string | undefined) => {
   const loadTalks = useCallback(async (id: string, page: number) => {
     try {
       setLoadingTalks(true);
-      
+
       // 톡 목록을 불러오기 전 사용자 인증 정보를 갱신 (최신 세션 정보 반영)
       if (page === 0) {
         await refreshMember();
@@ -51,7 +53,7 @@ export const useBookDetail = (bookId: string | undefined) => {
   }, [refreshMember]);
 
   const onTalkUpdate = () => {
-    if(bookId) {
+    if (bookId) {
       loadTalks(bookId, talkPage);
     }
   }
@@ -70,48 +72,48 @@ export const useBookDetail = (bookId: string | undefined) => {
     try {
       await postTalk(bookId, talkContent);
       setTalkContent('');
-      await loadTalks(bookId, 0); 
+      await loadTalks(bookId, 0);
     } catch (error: unknown) {
       if (error instanceof Error) {
-        alert(error.message);
+        showToast(error.message, 'error');
       } else {
-        alert(MESSAGES.ERROR.TALK_POST_FAILED);
+        showToast(MESSAGES.ERROR.TALK_POST_FAILED, 'error');
       }
     }
   };
 
   const onReaction = async (talkId: string, type: 'LIKE' | 'SUPPORT', hasReacted: boolean) => {
     if (!member?.isLoggedIn) {
-      alert(MESSAGES.ERROR.LOGIN_REQUIRED);
+      showToast(MESSAGES.ERROR.LOGIN_REQUIRED, 'error');
       return;
     }
     try {
       await handleReaction(talkId, type, hasReacted);
-      
+
       setTalks(prev => prev.map(t => {
         if (String(t.id) !== String(talkId)) return t;
         const isLike = type === 'LIKE';
-        
+
         if (isLike) {
-            return {
-                ...t,
-                didILike: !hasReacted,
-                like_count: hasReacted ? (t.like_count ?? 0) - 1 : (t.like_count ?? 0) + 1
-            };
-        } 
-        
-        return {
+          return {
             ...t,
-            didISupport: !hasReacted,
-            support_count: hasReacted ? (t.support_count ?? 0) - 1 : (t.support_count ?? 0) + 1
+            didILike: !hasReacted,
+            like_count: hasReacted ? (t.like_count ?? 0) - 1 : (t.like_count ?? 0) + 1
+          };
+        }
+
+        return {
+          ...t,
+          didISupport: !hasReacted,
+          support_count: hasReacted ? (t.support_count ?? 0) - 1 : (t.support_count ?? 0) + 1
         };
       }));
 
     } catch (error: unknown) {
       if (error instanceof Error) {
-        alert(error.message);
+        showToast(error.message, 'error');
       } else {
-        alert(MESSAGES.ERROR.REACTION_FAILED);
+        showToast(MESSAGES.ERROR.REACTION_FAILED, 'error');
       }
       if (bookId) loadTalks(bookId, talkPage);
     }

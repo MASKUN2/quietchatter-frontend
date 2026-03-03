@@ -31,13 +31,21 @@ src/
 ├── components/      # Reusable React UI components
 │   ├── book/        # UI components specifically for Book listing and detailing
 │   ├── common/      # System-wide components (Header, Footer, Spinners, generic Modals)
+│   │   └── OnboardingTooltip.tsx # Reusable floating tooltip (MUI Popper) for onboarding
 │   └── home/        # Specific sections rendered on the Home page
+│       └── HomeOnboarding.tsx    # Sequentially shows first-visit tooltips (config: TOOLTIP_STEPS)
 ├── constants/       # Static strings, system configuration values, and URL routes
-├── context/         # Centralized React Context files (e.g., `AuthContext.tsx`)
+├── context/         # Centralized React Context files
+│   ├── AuthContext.tsx           # Global login state and auth helpers
+│   └── OnboardingContext.tsx     # Shares first-visit tooltip refs across the component tree
 ├── hooks/           # Custom React Hooks for encapsulating domain business logic
+│   └── useFirstVisit.ts          # Detects first-time visitors per named key via localStorage.
+│                                 #   - Pass VISIT_KEYS.HOME, VISIT_KEYS.BOOK_DETAIL, etc.
+│                                 #   - Add new keys to the VISIT_KEYS constant in the same file.
 ├── mocks/           # Mock Service Worker (MSW) setup. Used for local testing without the backend.
 ├── pages/           # High-level Screen components. The React Router loads these directly.
 ├── types/           # TypeScript Definitions. `api-schema.d.ts` is generated automatically.
+├── utils/           # Shared utility functions (e.g., validation rules, formatting).
 ├── App.css          # Global CSS layout logic used exclusively by `App.tsx`
 ├── App.tsx          # The Main Application Layout, Theme Injection, and Master Router
 ├── index.css        # Fundamental HTML/Body CSS variables and resets
