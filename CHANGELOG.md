@@ -1,3 +1,10 @@
+## [1.4.1](https://github.com/MASKUN2/quiet-chatter-front-end/compare/v1.4.0...v1.4.1) (2026-03-07)
+
+
+### Bug Fixes
+
+* **onboarding:** Adjust tooltip display durations [skip ci] ([87b1c25](https://github.com/MASKUN2/quiet-chatter-front-end/commit/87b1c25ca11fe1da1e35db77808f8e0936bb3128))
+
 # [1.4.0](https://github.com/MASKUN2/quiet-chatter-front-end/compare/v1.3.0...v1.4.0) (2026-03-03)
 
 
