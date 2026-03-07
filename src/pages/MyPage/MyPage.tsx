@@ -1,105 +1,25 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Box, Typography, Button, CircularProgress, Stack, Divider } from '@mui/material';
 import PagePaper from '../../components/common/PagePaper';
-import { getMyTalks, handleReaction, getBooksByIds } from '../../api/api';
-import type { Talk } from '../../types';
 import TalkItem from '../../components/book/TalkItem';
 import WithdrawalDialog from './components/WithdrawalDialog';
 import { useAuth } from '../../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
+import { useMyTalks } from '../../hooks/useMyTalks';
 
 const MyPage: React.FC = () => {
     const { member } = useAuth();
     const navigate = useNavigate();
-
-    const [talks, setTalks] = useState<Talk[]>([]);
-    const [loading, setLoading] = useState(true);
-    const [page, setPage] = useState(0);
-    const [hasMore, setHasMore] = useState(true);
     const [isWithdrawalOpen, setIsWithdrawalOpen] = useState(false);
+
+    const isLoggedIn = !!member?.isLoggedIn;
+    const { talks, loading, hasMore, loadMore, handleTalkReaction, refresh } = useMyTalks(isLoggedIn);
 
     useEffect(() => {
         if (!member) {
             navigate('/home', { replace: true });
         }
     }, [member, navigate]);
-
-    const fetchTalks = useCallback(async (pageNum: number, isInitial = false) => {
-        try {
-            if (isInitial) setLoading(true);
-            const data = await getMyTalks(pageNum);
-
-            const bookIds = Array.from(new Set(data.content.map(t => t.bookId)));
-            const booksData = await getBooksByIds(bookIds);
-            const booksMap = new Map(booksData.map(b => [b.id, b]));
-
-            const enrichedTalks = data.content.map(t => {
-                const book = booksMap.get(t.bookId);
-                return {
-                    ...t,
-                    book: book ? {
-                        id: book.id,
-                        title: book.title,
-                        author: book.author,
-                        cover: book.thumbnailImageUrl || ''
-                    } : undefined
-                };
-            });
-
-            setTalks(prev => isInitial ? enrichedTalks : [...prev, ...enrichedTalks]);
-            setHasMore(!data.page.last);
-        } catch (error) {
-            console.error('Failed to fetch my talks:', error);
-        } finally {
-            if (isInitial) setLoading(false);
-        }
-    }, []);
-
-    useEffect(() => {
-        if (member) {
-            fetchTalks(0, true);
-        }
-    }, [member, fetchTalks]);
-
-    const loadMore = () => {
-        const nextPage = page + 1;
-        setPage(nextPage);
-        fetchTalks(nextPage);
-    };
-
-    const handleTalkReaction = async (talkId: string, type: 'LIKE' | 'SUPPORT', hasReacted: boolean) => {
-        if (!member) return;
-        try {
-            await handleReaction(talkId, type, hasReacted);
-            setTalks(prev => prev.map(talk => {
-                if (talk.id !== talkId) return talk;
-
-                let likeCount = talk.like_count ?? 0;
-                let supportCount = talk.support_count ?? 0;
-                let didILike = talk.didILike;
-                let didISupport = talk.didISupport;
-
-                if (type === 'LIKE') {
-                    didILike = !hasReacted;
-                    likeCount += didILike ? 1 : -1;
-                } else {
-                    didISupport = !hasReacted;
-                    supportCount += didISupport ? 1 : -1;
-                }
-
-                return {
-                    ...talk,
-                    like_count: likeCount,
-                    support_count: supportCount,
-                    didILike,
-                    didISupport
-                };
-            }));
-        } catch (error) {
-            console.error('Failed to handle reaction:', error);
-            alert('반응 처리에 실패했습니다.');
-        }
-    };
 
     if (!member) return null;
 
@@ -173,7 +93,7 @@ const MyPage: React.FC = () => {
                                     isMyPageMode={true}
                                     onReaction={handleTalkReaction}
                                     currentMemberId={member.id}
-                                    onUpdate={() => fetchTalks(0, true)}
+                                    onUpdate={refresh}
                                 />
                             </Box>
                         ))

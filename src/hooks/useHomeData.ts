@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { getRecommendedTalks, getBooksByIds } from '../api/api';
 import type { Talk, Book } from '../types';
 import { MESSAGES } from '../constants';
@@ -10,7 +10,7 @@ export const useHomeData = () => {
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const fetchData = async (isBackground = false) => {
+  const fetchData = useCallback(async (isBackground = false) => {
     try {
       if (!isBackground) setLoading(true);
       else setIsRefreshing(true);
@@ -35,16 +35,16 @@ export const useHomeData = () => {
       if (!isBackground) setLoading(false);
       else setIsRefreshing(false);
     }
-  };
+  }, []);
 
   useEffect(() => {
     fetchData(false);
-  }, []);
+  }, [fetchData]);
 
-  const refreshData = async () => {
+  const refreshData = useCallback(async () => {
     if (loading || isRefreshing) return;
     await fetchData(true);
-  };
+  }, [loading, isRefreshing, fetchData]);
 
   return { talks, books, loading, isRefreshing, refreshData, error };
 };

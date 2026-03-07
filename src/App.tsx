@@ -3,6 +3,8 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import { Box } from '@mui/material';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
+import { Container, Stack, useTheme, useMediaQuery } from '@mui/material';
+import { ErrorBoundary } from 'react-error-boundary';
 import Home from './pages/Home';
 import BookSearch from './pages/BookSearch';
 import BookDetail from './pages/BookDetail';
@@ -12,11 +14,12 @@ import AboutService from './pages/AboutService';
 import Header from './components/common/Header';
 import Footer from './components/common/Footer';
 import ScrollToTop from './components/common/ScrollToTop';
+import GlobalErrorFallback from './components/common/GlobalErrorFallback';
 import MyPage from './pages/MyPage/MyPage';
 import ProfileEditPage from './pages/MyPage/ProfileEditPage';
 import { AuthProvider } from './context/AuthContext';
 import { OnboardingProvider, useOnboardingRefsState } from './context/OnboardingContext';
-import { Container, Stack, useTheme, useMediaQuery } from '@mui/material';
+import { ToastProvider } from './providers/ToastProvider';
 
 const theme = createTheme({
   palette: {
@@ -113,10 +116,6 @@ const AppContent: React.FC = () => {
     </OnboardingProvider>
   );
 };
-
-import { ToastProvider } from './providers/ToastProvider';
-import { ErrorBoundary } from 'react-error-boundary';
-import GlobalErrorFallback from './components/common/GlobalErrorFallback';
 
 const App: React.FC = () => {
   return (

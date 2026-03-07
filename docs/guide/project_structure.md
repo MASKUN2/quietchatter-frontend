@@ -39,9 +39,15 @@ src/
 │   ├── AuthContext.tsx           # Global login state and auth helpers
 │   └── OnboardingContext.tsx     # Shares first-visit tooltip refs across the component tree
 ├── hooks/           # Custom React Hooks for encapsulating domain business logic
-│   └── useFirstVisit.ts          # Detects first-time visitors per named key via localStorage.
-│                                 #   - Pass VISIT_KEYS.HOME, VISIT_KEYS.BOOK_DETAIL, etc.
-│                                 #   - Add new keys to the VISIT_KEYS constant in the same file.
+│   ├── useBookDetail.ts  # All data logic for the Book Detail page (book info, talks, reactions, pagination)
+│   ├── useBookSearch.ts  # Book search logic with infinite scroll support
+│   ├── useFirstVisit.ts  # Detects first-time visitors per named key via localStorage.
+│   │                     #   - Pass VISIT_KEYS.HOME, VISIT_KEYS.BOOK_DETAIL, etc.
+│   │                     #   - Add new keys to the VISIT_KEYS constant in the same file.
+│   ├── useHomeData.ts    # Fetches recommended talks and their book data for the Home page
+│   ├── useIntersectionObserver.ts # Generic hook for infinite scroll / lazy loading triggers
+│   ├── useMyTalks.ts     # All data logic for MyPage (fetches user's talks, handles reactions, pagination)
+│   └── useToast.ts       # Consumes ToastContext to show global toast notifications
 ├── mocks/           # Mock Service Worker (MSW) setup. Used for local testing without the backend.
 ├── pages/           # High-level Screen components. The React Router loads these directly.
 ├── types/           # TypeScript Definitions. `api-schema.d.ts` is generated automatically.

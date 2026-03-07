@@ -1,17 +1,15 @@
 import React, { useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { Divider, Box, Typography, Pagination, Skeleton, Alert, Paper, useTheme, useMediaQuery, Dialog, DialogContent, DialogTitle, Stack } from '@mui/material';
+import { Divider, Box, Typography, Pagination, Skeleton, Alert, Dialog, DialogContent, DialogTitle, Stack } from '@mui/material';
 import BookInfo from '../components/book/BookInfo';
 import TalkForm from '../components/book/TalkForm';
 import TalkList from '../components/book/TalkList';
 import NaverLogin from '../components/common/NaverLogin';
+import PagePaper from '../components/common/PagePaper';
 import { useBookDetail } from '../hooks/useBookDetail';
 
 const BookDetail: React.FC = () => {
   const { bookId } = useParams<{ bookId: string }>();
-  const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
-
   const [loginModalOpen, setLoginModalOpen] = useState(false);
 
   const {
@@ -52,7 +50,7 @@ const BookDetail: React.FC = () => {
         <BookInfo book={book} />
         <Divider />
         <Box>
-          <Paper elevation={isMobile ? 0 : 1} sx={{ p: isMobile ? 1 : 2, borderRadius: isMobile ? 0 : 2, backgroundColor: 'background.paper' }}>
+          <PagePaper sx={{ p: { xs: 1, sm: 2 } }}>
             <Box sx={{ mb: 3 }}>
               <Typography variant="overline" sx={{ color: 'primary.main', fontWeight: 800, letterSpacing: '0.2em', fontSize: '0.75rem', display: 'block', lineHeight: 1.4 }}>
                 BOOK TALK
@@ -94,11 +92,11 @@ const BookDetail: React.FC = () => {
                   page={talkPage + 1}
                   onChange={handlePageChange}
                   color="primary"
-                  size={isMobile ? "small" : "medium"}
+                  size="small"
                 />
               </Box>
             )}
-          </Paper>
+          </PagePaper>
         </Box>
       </Stack>
 

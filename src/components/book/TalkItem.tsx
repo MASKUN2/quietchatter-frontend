@@ -12,6 +12,7 @@ import { updateTalk, deleteTalk } from '../../api/api';
 import type { Talk } from '../../types';
 import CharacterLimitedTextField from '../common/CharacterLimitedTextField';
 import { useToast } from '../../hooks/useToast';
+import { MESSAGES } from '../../constants';
 
 interface TalkItemProps {
   talk: Talk;
@@ -49,7 +50,7 @@ const TalkItem: React.FC<TalkItemProps> = ({ talk, onReaction, currentMemberId, 
       if (error instanceof Error) {
         showToast(error.message, 'error');
       } else {
-        showToast('수정에 실패했습니다.', 'error');
+        showToast(MESSAGES.ERROR.TALK_UPDATE_FAILED, 'error');
       }
     } finally {
       setLoading(false);
@@ -62,13 +63,13 @@ const TalkItem: React.FC<TalkItemProps> = ({ talk, onReaction, currentMemberId, 
     setLoading(true);
     try {
       await deleteTalk(talk.id);
-      showToast('성공적으로 삭제되었습니다.', 'success');
+      showToast(MESSAGES.SUCCESS.TALK_DELETED, 'success');
       onUpdate();
     } catch (error: unknown) {
       if (error instanceof Error) {
         showToast(error.message, 'error');
       } else {
-        showToast('삭제에 실패했습니다.', 'error');
+        showToast(MESSAGES.ERROR.TALK_DELETE_FAILED, 'error');
       }
       setLoading(false);
     }

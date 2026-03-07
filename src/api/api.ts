@@ -1,4 +1,5 @@
 import axios from 'axios';
+import type { AxiosResponse } from 'axios';
 import type { Book, PageResponse, SliceResponse, Talk, Member, Schemas } from '../types';
 import { API, MESSAGES, PAGINATION } from '../constants';
 
@@ -12,8 +13,8 @@ const apiClient = axios.create({
 });
 
 export class ApiError extends Error {
-  response?: any;
-  constructor(message: string, response?: any) {
+  response?: AxiosResponse;
+  constructor(message: string, response?: AxiosResponse) {
     super(message);
     this.name = 'ApiError';
     this.response = response;

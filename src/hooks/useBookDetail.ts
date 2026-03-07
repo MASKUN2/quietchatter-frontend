@@ -52,11 +52,11 @@ export const useBookDetail = (bookId: string | undefined) => {
     }
   }, [refreshMember]);
 
-  const onTalkUpdate = () => {
+  const onTalkUpdate = useCallback(() => {
     if (bookId) {
       loadTalks(bookId, talkPage);
     }
-  }
+  }, [bookId, talkPage, loadTalks]);
 
   useEffect(() => {
     if (bookId) {
@@ -65,7 +65,7 @@ export const useBookDetail = (bookId: string | undefined) => {
     }
   }, [bookId, loadBook, loadTalks]);
 
-  const onPostTalk = async (e: React.FormEvent) => {
+  const onPostTalk = useCallback(async (e: React.FormEvent) => {
     e.preventDefault();
     if (!bookId || !talkContent.trim()) return;
 
@@ -80,9 +80,9 @@ export const useBookDetail = (bookId: string | undefined) => {
         showToast(MESSAGES.ERROR.TALK_POST_FAILED, 'error');
       }
     }
-  };
+  }, [bookId, talkContent, loadTalks, showToast]);
 
-  const onReaction = async (talkId: string, type: 'LIKE' | 'SUPPORT', hasReacted: boolean) => {
+  const onReaction = useCallback(async (talkId: string, type: 'LIKE' | 'SUPPORT', hasReacted: boolean) => {
     if (!member?.isLoggedIn) {
       showToast(MESSAGES.ERROR.LOGIN_REQUIRED, 'error');
       return;
@@ -117,7 +117,7 @@ export const useBookDetail = (bookId: string | undefined) => {
       }
       if (bookId) loadTalks(bookId, talkPage);
     }
-  };
+  }, [member?.isLoggedIn, bookId, talkPage, loadTalks, showToast]);
 
   const handlePageChange = (_: React.ChangeEvent<unknown>, value: number) => {
     if (bookId) loadTalks(bookId, value - 1);

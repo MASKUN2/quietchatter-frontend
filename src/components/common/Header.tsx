@@ -5,20 +5,21 @@ import NaverLogin from './NaverLogin';
 import {
   Box, TextField, Button, InputAdornment, Paper,
   IconButton, Typography, Menu, MenuItem, useMediaQuery, useTheme,
-  Skeleton, Snackbar, Alert
+  Skeleton
 } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import MenuIcon from '@mui/icons-material/Menu';
 import AccountCircle from '@mui/icons-material/AccountCircle';
 import { useAuth } from '../../context/AuthContext';
+import { useToast } from '../../hooks/useToast';
 import HomeOnboarding from '../home/HomeOnboarding';
 import { useOnboardingRefs } from '../../context/OnboardingContext';
 
 const Header: React.FC = () => {
   const [keyword, setKeyword] = useState('');
   const { member, loading, logout } = useAuth();
+  const { showToast } = useToast();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-  const [toastOpen, setToastOpen] = useState(false);
 
   // ── 온보딩 툴팁용 refs (OnboardingContext에서 읽음) ───────────────────
   const { logoRef, searchRef, vocRef, loginRef } = useOnboardingRefs();
@@ -38,7 +39,7 @@ const Header: React.FC = () => {
   const handleLogout = async () => {
     handleClose();
     await logout();
-    setToastOpen(true);
+    showToast('로그아웃 되었습니다.', 'success');
   };
 
   const handleMenu = (event: React.MouseEvent<HTMLElement>) => {
@@ -207,17 +208,6 @@ const Header: React.FC = () => {
           </Box>
         </form>
       </Paper>
-
-      <Snackbar
-        open={toastOpen}
-        autoHideDuration={3000}
-        onClose={() => setToastOpen(false)}
-        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
-      >
-        <Alert severity="success" variant="filled" sx={{ width: '100%' }}>
-          로그아웃 되었습니다.
-        </Alert>
-      </Snackbar>
 
       {/* ── 온보딩 툴팁 오케스트레이터 ────────────────────────────────────
            Context에서 refs를 읽으므로 props 없이 사용합니다.
