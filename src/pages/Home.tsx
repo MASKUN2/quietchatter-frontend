@@ -5,7 +5,7 @@ import RecommendedTalks from '../components/home/RecommendedTalks';
 import UpdateLog from '../components/home/UpdateLog';
 import RecommendedTalksTimer from '../components/home/RecommendedTalksTimer';
 import { useHomeData } from '../hooks/useHomeData';
-import { useOnboardingRefs } from '../context/OnboardingContext';
+import { useOnboardingRefs } from '../hooks/useOnboarding';
 
 const Home: React.FC = () => {
   const { talks, books, loading, isRefreshing, refreshData, error } = useHomeData();

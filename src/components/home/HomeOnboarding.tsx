@@ -1,7 +1,7 @@
 import { useEffect, useState, useRef } from 'react';
 import OnboardingTooltip from '../common/OnboardingTooltip';
 import { useFirstVisit, VISIT_KEYS } from '../../hooks/useFirstVisit';
-import { useOnboardingRefs } from '../../context/OnboardingContext';
+import { useOnboardingRefs } from '../../hooks/useOnboarding';
 
 /**
  * 각 툴팁 설정을 나타내는 타입.
@@ -75,10 +75,13 @@ const HomeOnboarding: React.FC = () => {
     useEffect(() => {
         if (!isFirstVisit) return;
 
-        // 첫 번째 툴팁 즉시 표시
-        setActiveIndex(0);
+        // 첫 번째 툴팁 표시 (cascading render 방지를 위해 microtask 이후 실행)
+        const timeout = setTimeout(() => {
+            setActiveIndex(0);
+        }, 0);
 
         return () => {
+            clearTimeout(timeout);
             if (timerRef.current) clearTimeout(timerRef.current);
         };
     }, [isFirstVisit]);

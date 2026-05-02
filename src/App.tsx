@@ -17,7 +17,8 @@ import ScrollToTop from './components/common/ScrollToTop';
 import GlobalErrorFallback from './components/common/GlobalErrorFallback';
 import MyPage from './pages/MyPage/MyPage';
 import ProfileEditPage from './pages/MyPage/ProfileEditPage';
-import { OnboardingProvider, useOnboardingRefsState } from './context/OnboardingContext';
+import { OnboardingProvider } from './context/OnboardingContext';
+import { useOnboardingRefsState } from './hooks/useOnboarding';
 import { ToastProvider } from './providers/ToastProvider';
 
 const theme = createTheme({

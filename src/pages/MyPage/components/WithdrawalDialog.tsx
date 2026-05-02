@@ -23,8 +23,12 @@ const WithdrawalDialog: React.FC<WithdrawalDialogProps> = ({ open, onClose }) =>
             await refreshMember();
             onClose();
             navigate('/home', { replace: true });
-        } catch (error: any) {
-            setErrorInfo(error.message || '회원탈퇴에 실패했습니다.');
+        } catch (error: unknown) {
+            if (error instanceof Error) {
+                setErrorInfo(error.message || '회원탈퇴에 실패했습니다.');
+            } else {
+                setErrorInfo('회원탈퇴에 실패했습니다.');
+            }
         } finally {
             setLoading(false);
         }

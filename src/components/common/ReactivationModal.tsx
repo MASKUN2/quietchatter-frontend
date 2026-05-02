@@ -21,11 +21,13 @@ const ReactivationModal: React.FC<ReactivationModalProps> = ({ open, reactivatio
         try {
             await reactivateAccount(reactivationToken);
             await onReactivated('계정이 성공적으로 재활성화되었습니다. 환영합니다!');
-        } catch (error: any) {
-            if (error instanceof ApiError && error.response?.data?.status === 401) {
+        } catch (error: unknown) {
+            if (error instanceof ApiError && error.response?.status === 401) {
                 onTokenExpired();
-            } else {
+            } else if (error instanceof Error) {
                 setErrorInfo(error.message || '계정 재활성화에 실패했습니다.');
+            } else {
+                setErrorInfo('계정 재활성화에 실패했습니다.');
             }
         } finally {
             if (open) { // In case the modal wasn't closed

@@ -6,7 +6,7 @@ import ThumbUpAltIcon from '@mui/icons-material/ThumbUpAlt';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import type { Talk, Book } from '../../types';
-import { useOnboardingRefs } from '../../context/OnboardingContext';
+import { useOnboardingRefs } from '../../hooks/useOnboarding';
 
 interface RecommendedTalksProps {
   loading: boolean;

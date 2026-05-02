@@ -16,20 +16,20 @@ const iconMap: { [key: string]: React.ElementType } = {
     Timer: TimerIcon,
 };
 
+const Highlight = ({ children, color = 'rgba(92, 45, 145, 0.12)' }: { children: React.ReactNode; color?: string }) => (
+    <Box component="span" sx={{
+        bgcolor: color,
+        px: 0.6,
+        borderRadius: '4px',
+        fontWeight: 700,
+    }}>
+        {children}
+    </Box>
+);
+
 const AboutService: React.FC = () => {
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('md'));
-
-    const Highlight = ({ children, color = 'rgba(92, 45, 145, 0.12)' }: { children: React.ReactNode; color?: string }) => (
-        <Box component="span" sx={{
-            bgcolor: color,
-            px: 0.6,
-            borderRadius: '4px',
-            fontWeight: 700,
-        }}>
-            {children}
-        </Box>
-    );
 
     return (
         <Box>

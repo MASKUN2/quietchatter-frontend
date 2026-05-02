@@ -13,7 +13,7 @@ import AccountCircle from '@mui/icons-material/AccountCircle';
 import { useAuthStore } from '../../store/useAuthStore';
 import { useToast } from '../../hooks/useToast';
 import HomeOnboarding from '../home/HomeOnboarding';
-import { useOnboardingRefs } from '../../context/OnboardingContext';
+import { useOnboardingRefs } from '../../hooks/useOnboarding';
 
 const Header: React.FC = () => {
   const [keyword, setKeyword] = useState('');

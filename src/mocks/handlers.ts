@@ -11,10 +11,10 @@ export const handlers = [
         });
     }),
     // Mock Book Details
-    http.get('/api/books/:bookId', (info: any) => {
-        const { bookId } = info.params;
+    http.get('/api/books/:bookId', ({ params }) => {
+        const { bookId } = params;
         return HttpResponse.json({
-            id: bookId,
+            id: bookId as string,
             title: 'Mock Book Title',
             author: 'Mock Author',
             isbn: '1234567890',
@@ -66,10 +66,9 @@ export const handlers = [
         return HttpResponse.json({}, { status: 200 });
     }),
     // Mock My Talks (using /api/talks)
-    http.get('/api/talks', (info: any) => {
-        const url = new URL(info.request.url);
+    http.get('/api/talks', ({ request }) => {
+        const url = new URL(request.url);
         const memberId = url.searchParams.get('memberId');
-        const bookId = url.searchParams.get('bookId');
 
         // memberId가 있으면 내 톡 조회로 간주
         if (memberId) {

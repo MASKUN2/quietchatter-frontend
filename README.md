@@ -1,73 +1,90 @@
-# Quiet Chatter Front-end
+# microservice-frontend
 
-Quiet Chatter 서비스의 웹 프론트엔드 프로젝트입니다.
-**"익명성과 휘발성을 결합한, 수줍은 이들을 위한 저자극 독서 나눔 SNS"**라는 핵심 가치를 사용자에게 온전히 전달하기 위해 편안하고 직관적인 UI/UX를 지향합니다.
+QuietChatter 서비스의 웹 프론트엔드 프로젝트. 익명성과 휘발성을 결합한 저자극 독서 나눔 SNS 가치를 전달하기 위한 UI/UX를 제공한다.
 
-🌐 **라이브 서비스**: [quiet-chatter.com](https://quiet-chatter.com)
+## 기술 스택
 
-## 🛠 기술 스택
+- 코어: React 19, TypeScript, Vite
+- 상태 관리: Zustand
+- UI 프레임워크: Material UI (MUI) v6
+- 라우팅: React Router DOM v7
+- HTTP 클라이언트: Axios
+- 모킹: Mock Service Worker (MSW)
+- 배포: Cloudflare Pages
 
-- **Core**: React 19, TypeScript, Vite
-- **State Management**: Zustand
-- **UI Framework**: Material UI (MUI) v6
-- **Routing**: React Router DOM v7
-- **HTTP Client**: Axios
-- **Mocking**: Mock Service Worker (MSW)
-- **Deployment**: Cloudflare Pages
+## 패키지 구조
 
----
+src/ 디렉토리 구조:
+- api/: API 요청 정의 (Axios)
+- assets/: 로컬 자산 (SVG, 이미지)
+- components/: 재사용 UI 컴포넌트 (book, common, home 등)
+- constants/: 정적 문자열, 설정값, 경로
+- context/: React Context (Auth, Onboarding)
+- hooks/: 커스텀 훅 (비즈니스 로직 캡슐화)
+- mocks/: MSW 설정 및 핸들러
+- pages/: 페이지 컴포넌트 (라우터 로드)
+- types/: TypeScript 정의 (api-schema.d.ts 자동 생성)
+- utils/: 공용 유틸리티 함수
 
-## 🚀 시작하기
+## 아키텍처 및 설계 원칙
 
-### 1. 사전 요구사항
-- Node.js (v18 이상 권장)
-- npm
+레이아웃 구조:
+- App.tsx에서 전체 레이아웃을 중앙 집중 관리한다.
+- 개별 페이지는 Container나 Header를 포함하지 않고 PagePaper 컴포넌트로 본문만 감싼다.
+- 새로운 레이아웃 블록 사이의 간격은 spacing={xs: 2, md: 4} 규격을 사용한다.
 
-### 2. 설치
-프로젝트 루트 디렉토리에서 패키지 의존성을 설치합니다.
-```bash
-npm install
-```
+상태 관리 전략:
+- UI 전용 상태는 useState를 우선 사용한다.
+- 전역 데이터(로그인 등)는 Context API 또는 Zustand를 사용한다.
+- 공유 가능한 내비게이션 상태는 URL 파라미터(useSearchParams)를 진실의 근거로 삼는다.
 
-### 3. 로컬 서버 실행
-API 요청을 백엔드로 프록시(Proxy) 하는 로컬 개발 서버를 실행합니다.
-```bash
-npm run dev
-```
-> **Tip**: 백엔드 서버 없이 UI만 테스트하고 싶다면, `npm run dev:mock` 명령어를 통해 MSW 모의 서버를 활용할 수 있습니다.
+API 및 데이터 로직:
+- 컴포넌트 내부에 fetch 로직을 직접 작성하지 않는다.
+- 모든 API 호출은 src/api/api.ts에 정의된 함수를 사용한다.
+- 복잡한 데이터 처리(무한 스크롤, 페이징 등)는 개별 커스텀 훅으로 분리한다.
+- 모든 사용자 메시지는 src/constants/index.ts의 MESSAGES 객체에 정의한다.
+- 에러 처리는 useToast 훅을 통한 전역 토스트 시스템을 사용한다.
 
----
+## 디자인 및 UI 가이드
 
-## 📝 주요 스크립트 모음
+색상 팔레트:
+- Deep Violet: #5c2d91 (주요 버튼, 하이라이트)
+- Deep Indigo: #4b0082 (호버, 강조)
+- Default Background: #f8f9fa
+- Paper Background: #ffffff
 
-| 명령어 | 설명 |
-| :--- | :--- |
-| `npm run dev` | 로컬 개발 프록시 서버 실행 |
-| `npm run dev:mock` | 로컬 개발 오픈 + MSW 기반 Mock 서버 켜기 (백엔드 미연결 시 사용) |
-| `npm run gen:types` | 백엔드 OpenAPI 스펙을 기반으로 `api-schema.d.ts` 최신 타입 자동 생성 |
-| `npm run lint` | ESLint 기반 코드 퀄리티 검사 |
-| `npm run build` | 프로덕션 환경을 위한 빌드 (TypeScript 컴파일 포함) |
+타이포그래피 및 섹션 헤더:
+- 기본 폰트는 Pretendard를 사용한다.
+- 섹션 제목은 2줄 패턴(Overline 라벨 + h5 타이포그래피)을 준수한다.
 
----
+컴포넌트 패턴:
+- 버튼의 자동 대문자 변환을 방지하기 위해 textTransform: 'none'을 설정한다.
+- 로딩 상태의 Skeleton UI는 실제 데이터 렌더링 시의 레이아웃과 크기가 일치해야 한다.
+- 레이아웃 수정 시 MUI의 sx prop과 Breakpoint 객체를 우선 활용한다.
 
-## 📚 개발자 및 AI 에이전트 가이드
+## 인증 시스템
 
-**프로젝트에 기여하거나 AI 에이전트를 활용하기 전, 반드시 다음 가이드 문서를 확인하세요.**
+동작 방식:
+- AuthContext를 통해 로그인 상태를 전역 관리한다.
+- 네이버 OAuth 로그인 흐름을 따르며, 백엔드에서 설정한 쿠키를 통해 세션을 유지한다.
+- 초기화 시 /api/auth/me를 호출하여 세션 유효성을 확인한다.
+- UI 권한 제어는 useAuth 훅에서 제공하는 member 상태를 기반으로 수행한다.
 
-모든 필수 작업 원칙과 규약은 [**AGENTS.md**](./AGENTS.md) 문서에 종합되어 있습니다. 이 파일이 프로젝트의 **진입점(Entry Point)** 역할을 합니다. 목적에 따라 분리된 세부 가이드는 `docs/guide/` 폴더에서 확인할 수 있습니다.
+## 개발 워크플로우
 
-- 🏛️ **[Architecture Guide](docs/guide/architecture_guide.md)**: React 컴포넌트 구조, 상태 관리, API 흐름 가이드
-- 🚀 **[Workflow Guide](docs/guide/workflow_guide.md)**: 로컬 셋업, 테스트, Git Commit 컨벤션 가이드
-- 🎨 **[Design Guide](docs/guide/design_guide.md)**: 색상, 타이포그래피, 간격, MUI 스타일 가이드
-- 📝 **[Code Style Guide](docs/guide/code_style_guide.md)**: 네이밍 컨벤션 및 린트 규칙
-- 🔐 **[Auth Guide](docs/guide/auth_guide.md)**: 네이버 OAuth 연동 및 권한 처리 가이드
-- 📂 **[Project Structure](docs/guide/project_structure.md)**: 프로젝트 폴더 및 파일 트리 구조도
+API 연동:
+- 타입을 수동으로 수정하지 않는다. 백엔드 변경 시 npm run gen:types를 실행한다.
+- src/api/api.ts를 업데이트할 때 자동 생성된 타입을 엄격히 적용한다.
 
-> **Shared Docs**: 전체 서비스 기획 및 개발 히스토리는 [quiet-chatter-docs 레포지토리](https://github.com/maskun2/quiet-chatter-docs)를 참고하세요.
+검증 체크리스트:
+- 빌드 테스트: npm run build 실행 시 에러가 없어야 한다.
+- 코드 퀄리티: npm run lint 실행 시 경고가 없어야 한다.
+- 런타임 테스트: 브라우저 콘솔에 React 경고나 에러가 없는지 확인한다.
 
----
+## 실행 방법
 
-## 👥 팀 구성 정보
+사전 요구사항: Node.js v18 이상
 
-- **프론트/백엔드 개발**: 정인호 (Inho Jeong)
-- **프로덕트 기획/UX**: 신정원 (Jungwon Shin)
+1. 의존성 설치: npm install
+2. 로컬 서버 실행 (백엔드 프록시): npm run dev
+3. 모킹 서버 실행 (MSW): npm run dev:mock

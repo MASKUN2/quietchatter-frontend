@@ -5,6 +5,7 @@ import { loginWithNaver, signupWithNaver } from '../api/auth';
 import { useAuthStore } from '../store/useAuthStore';
 import SignupModal from '../components/common/SignupModal';
 import ReactivationModal from '../components/common/ReactivationModal';
+import { ApiError } from '../api/client';
 
 const NaverCallback: React.FC = () => {
   const [searchParams] = useSearchParams();
@@ -65,14 +66,17 @@ const NaverCallback: React.FC = () => {
         setLoading(false);
         setStatusMessage('회원가입을 진행합니다.');
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Login failed:', error);
-      if (error.response?.data?.type === '/errors/member-deactivated' && error.response?.data?.reactivationToken) {
-        setReactivationToken(error.response.data.reactivationToken);
-        setShowReactivation(true);
-        setLoading(false);
-        setStatusMessage('계정 재활성화가 필요합니다.');
-        return;
+      if (error instanceof ApiError) {
+        const data = error.response?.data as { type?: string; reactivationToken?: string };
+        if (data?.type === '/errors/member-deactivated' && data?.reactivationToken) {
+          setReactivationToken(data.reactivationToken);
+          setShowReactivation(true);
+          setLoading(false);
+          setStatusMessage('계정 재활성화가 필요합니다.');
+          return;
+        }
       }
       showToast('로그인에 실패했습니다.', 'error');
       const redirectUrl = localStorage.getItem('redirect_after_login') || '/home';

@@ -46,7 +46,7 @@ export const useMyTalks = (isLoggedIn: boolean) => {
         } finally {
             if (isInitial) setLoading(false);
         }
-    }, []);
+    }, [member?.id]);
 
     useEffect(() => {
         if (isLoggedIn) {
