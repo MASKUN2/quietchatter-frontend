@@ -2,10 +2,12 @@ import { useState, useEffect, useCallback } from 'react';
 import { getMyTalks, handleReaction, getBooksByIds } from '../api/api';
 import type { Talk } from '../types';
 import { useToast } from './useToast';
+import { useAuth } from '../context/AuthContext';
 import { MESSAGES } from '../constants';
 
 export const useMyTalks = (isLoggedIn: boolean) => {
     const { showToast } = useToast();
+    const { member } = useAuth();
 
     const [talks, setTalks] = useState<Talk[]>([]);
     const [loading, setLoading] = useState(true);
@@ -13,9 +15,11 @@ export const useMyTalks = (isLoggedIn: boolean) => {
     const [hasMore, setHasMore] = useState(true);
 
     const fetchTalks = useCallback(async (pageNum: number, isInitial = false) => {
+        if (!member?.id) return;
+
         try {
             if (isInitial) setLoading(true);
-            const data = await getMyTalks(pageNum);
+            const data = await getMyTalks(member.id, pageNum);
 
             const bookIds = Array.from(new Set(data.content.map(t => t.bookId)));
             const booksData = await getBooksByIds(bookIds);
