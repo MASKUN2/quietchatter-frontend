@@ -88,3 +88,5 @@ API 연동:
 1. 의존성 설치: npm install
 2. 로컬 서버 실행 (백엔드 프록시): npm run dev
 3. 모킹 서버 실행 (MSW): npm run dev:mock
+4. 테스트 실행: npm run test
+5. 테스트 UI 실행: npm run test:ui
