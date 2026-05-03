@@ -33,8 +33,8 @@ export type Talk = NonNullable<components['schemas']['Talk_TalkPageResponse']['c
   book?: {
     id: string;
     title: string;
-    author: string;
-    cover: string;
+    author?: string | null;
+    cover?: string | null;
   };
 };
 

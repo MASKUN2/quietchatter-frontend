@@ -92,10 +92,10 @@ export interface paths {
             cookie?: never;
         };
         /**
-         * Search books by keyword (title, author, or ISBN)
-         * @description Search books by keyword (title, author, or ISBN)
+         * Get a list of books by their IDs
+         * @description Get a list of books by their IDs
          */
-        get: operations["search-books"];
+        get: operations["get-books-by-idssearch-books"];
         put?: never;
         post?: never;
         delete?: never;
@@ -148,6 +148,26 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/talks/recommended": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get recommended talks
+         * @description Get recommended talks
+         */
+        get: operations["get-recommended-talks"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/talks/{talkId}": {
         parameters: {
             query?: never;
@@ -162,7 +182,11 @@ export interface paths {
          */
         put: operations["update-talk"];
         post?: never;
-        delete?: never;
+        /**
+         * Delete (soft-delete) an existing talk
+         * @description Delete (soft-delete) an existing talk
+         */
+        delete: operations["delete-talk"];
         options?: never;
         head?: never;
         patch?: never;
@@ -182,7 +206,11 @@ export interface paths {
          * @description Add a reaction to a talk
          */
         post: operations["add-reaction"];
-        delete?: never;
+        /**
+         * Remove a reaction from a talk
+         * @description Remove a reaction from a talk
+         */
+        delete: operations["remove-reaction"];
         options?: never;
         head?: never;
         patch?: never;
@@ -237,19 +265,26 @@ export interface components {
             /** @description OAuth state parameter */
             state: string;
         };
-        /** BookResponse */
-        Book_BookResponse: {
-            /** @description Book ISBN */
-            isbn: string;
-            /** @description Book ID */
-            id: string;
-            /** @description Book Title */
-            title: string;
-        };
-        /** BookSliceResponse */
-        Book_BookSliceResponse: {
+        /** BookListResponse */
+        Book_BookListResponse: {
             /** @description Current page number */
             number: number;
+            "[]"?: {
+                /** @description Thumbnail Image URL (optional) */
+                thumbnailImageUrl?: string | null;
+                /** @description Author (optional) */
+                author?: string | null;
+                /** @description Book ISBN */
+                isbn: string;
+                /** @description Description (optional) */
+                description?: string | null;
+                /** @description Book ID */
+                id: string;
+                /** @description External Link URL (optional) */
+                externalLinkUrl?: string | null;
+                /** @description Book Title */
+                title: string;
+            };
             /** @description Number of elements in current page */
             numberOfElements: number;
             /** @description Page size */
@@ -269,17 +304,44 @@ export interface components {
             /** @description Is first page */
             first: boolean;
             content?: {
+                /** @description Thumbnail Image URL */
+                thumbnailImageUrl?: string | null;
+                /** @description Author */
+                author?: string | null;
                 /** @description Book ISBN */
                 isbn: string;
+                /** @description Description */
+                description?: string | null;
                 /** @description Book ID */
                 id: string;
+                /** @description External Link URL */
+                externalLinkUrl?: string | null;
                 /** @description Book Title */
                 title: string;
             }[];
             /** @description Is empty */
             empty: boolean;
         };
-        "Talk_api-talks-1736083227": {
+        /** BookResponse */
+        Book_BookResponse: {
+            /** @description Thumbnail Image URL (optional) */
+            thumbnailImageUrl?: string | null;
+            /** @description Author (optional) */
+            author?: string | null;
+            /** @description Book ISBN */
+            isbn: string;
+            /** @description Description (optional) */
+            description?: string | null;
+            /** @description Book ID */
+            id: string;
+            /** @description External Link URL (optional) */
+            externalLinkUrl?: string | null;
+            /** @description Book Title */
+            title: string;
+        };
+        "Talk_api-talks2030240450": {
+            /** @description Date when talk becomes hidden (optional, defaults to 1 year) */
+            dateToHidden?: string | null;
             /** @description Talk content */
             content: string;
             /** @description Book ID */
@@ -289,6 +351,31 @@ export interface components {
             /** @description Reaction type (LIKE, SUPPORT) */
             type: string;
         };
+        /** TalkListResponse */
+        Talk_TalkListResponse: {
+            /** @description Did I Like */
+            didILike: boolean;
+            /** @description Created At */
+            createdAt: string;
+            /** @description Is Modified */
+            isModified: boolean;
+            /** @description Did I Support */
+            didISupport: boolean;
+            /** @description Support Count */
+            supportCount: number;
+            /** @description Nickname */
+            nickname: string;
+            /** @description Like Count */
+            likeCount: number;
+            /** @description Talk ID */
+            id: string;
+            /** @description Content */
+            content: string;
+            /** @description Member ID */
+            memberId: string;
+            /** @description Book ID */
+            bookId: string;
+        }[];
         "Talk_api-talks-talkId-349859363": {
             /** @description Updated talk content */
             content: string;
@@ -424,9 +511,11 @@ export interface operations {
             };
         };
     };
-    "search-books": {
+    "get-books-by-idssearch-books": {
         parameters: {
             query: {
+                /** @description Comma-separated list of book IDs */
+                id: string;
                 /** @description The search keyword */
                 keyword: string;
                 /** @description Page number (starts from 0) */
@@ -446,7 +535,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["Book_BookSliceResponse"];
+                    "application/json": components["schemas"]["Book_BookListResponse"];
                 };
             };
         };
@@ -513,7 +602,7 @@ export interface operations {
         };
         requestBody?: {
             content: {
-                "application/json;charset=UTF-8": components["schemas"]["Talk_api-talks-1736083227"];
+                "application/json;charset=UTF-8": components["schemas"]["Talk_api-talks2030240450"];
             };
         };
         responses: {
@@ -524,6 +613,29 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["Talk_api-talks486549215"];
+                };
+            };
+        };
+    };
+    "get-recommended-talks": {
+        parameters: {
+            query?: {
+                /** @description Number of talks to return (default: 5) */
+                size?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description 200 */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Talk_TalkListResponse"];
                 };
             };
         };
@@ -553,7 +665,53 @@ export interface operations {
             };
         };
     };
+    "delete-talk": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Talk ID */
+                talkId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description 204 */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
     "add-reaction": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Talk ID */
+                talkId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json;charset=UTF-8": components["schemas"]["Talk_api-reactions-talks-talkId1159801027"];
+            };
+        };
+        responses: {
+            /** @description 204 */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    "remove-reaction": {
         parameters: {
             query?: never;
             header?: never;

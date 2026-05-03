@@ -65,7 +65,7 @@ const BookDetail: React.FC = () => {
                 content={talkContent}
                 setContent={setTalkContent}
                 onSubmit={onPostTalk}
-                nickname={member?.nickname}
+                nickname={member?.nickname ?? undefined}
               />
             ) : (
               <TalkForm
