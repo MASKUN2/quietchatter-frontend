@@ -1,3 +1,10 @@
+# [1.8.0](https://github.com/MASKUN2/quietchatter-frontend/compare/v1.7.0...v1.8.0) (2026-05-03)
+
+
+### Features
+
+* implement infinite onboarding loop with opt-out snackbar ([4785e8c](https://github.com/MASKUN2/quietchatter-frontend/commit/4785e8cd7280bfd6ffe9167270f9c6723a4254b8))
+
 # [1.7.0](https://github.com/MASKUN2/quietchatter-frontend/compare/v1.6.0...v1.7.0) (2026-05-03)
 
 
