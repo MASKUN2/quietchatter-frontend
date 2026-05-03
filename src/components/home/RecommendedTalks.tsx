@@ -113,11 +113,11 @@ const RecommendedTalks: React.FC<RecommendedTalksProps> = ({ loading, error, tal
               <Stack direction="row" spacing={1.5} sx={{ ml: 2, alignItems: 'center', display: { xs: 'none', sm: 'flex' } }}>
                 <Typography variant="caption" display="flex" alignItems="center" color={talk.didILike ? "primary.main" : "text.secondary"}>
                   {talk.didILike ? <ThumbUpAltIcon fontSize="small" sx={{ mr: 0.5 }} /> : <ThumbUpOffAltIcon fontSize="small" sx={{ mr: 0.5 }} />}
-                  {talk.like_count}
+                  {talk.likeCount}
                 </Typography>
                 <Typography variant="caption" display="flex" alignItems="center" color={talk.didISupport ? "error.main" : "text.secondary"}>
                   {talk.didISupport ? <FavoriteIcon fontSize="small" sx={{ mr: 0.5 }} /> : <FavoriteBorderIcon fontSize="small" sx={{ mr: 0.5 }} />}
-                  {talk.support_count}
+                  {talk.supportCount}
                 </Typography>
               </Stack>
             </ListItemButton>

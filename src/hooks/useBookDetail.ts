@@ -99,14 +99,14 @@ export const useBookDetail = (bookId: string | undefined) => {
           return {
             ...t,
             didILike: !hasReacted,
-            like_count: hasReacted ? (t.like_count ?? 0) - 1 : (t.like_count ?? 0) + 1
+            likeCount: hasReacted ? (t.likeCount ?? 0) - 1 : (t.likeCount ?? 0) + 1
           };
         }
 
         return {
           ...t,
           didISupport: !hasReacted,
-          support_count: hasReacted ? (t.support_count ?? 0) - 1 : (t.support_count ?? 0) + 1
+          supportCount: hasReacted ? (t.supportCount ?? 0) - 1 : (t.supportCount ?? 0) + 1
         };
       }));
 

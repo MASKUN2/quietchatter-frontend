@@ -112,7 +112,7 @@ const TalkItem: React.FC<TalkItemProps> = ({ talk, onReaction, currentMemberId, 
             <AccessTimeIcon sx={{ fontSize: '0.875rem' }} />
             <Typography variant="caption">
               {formatDate(talk.createdAt)}
-              {talk.is_modified && ' (수정됨)'}
+              {talk.isModified && ' (수정됨)'}
             </Typography>
             <Typography variant="caption" sx={{ ml: 0.5, fontWeight: 500 }}>
               by {talk.nickname}
@@ -184,11 +184,11 @@ const TalkItem: React.FC<TalkItemProps> = ({ talk, onReaction, currentMemberId, 
               <>
                 <Typography variant="body2" color="text.secondary" sx={{ display: 'flex', alignItems: 'center' }}>
                   <ThumbUpAltIcon fontSize="small" sx={{ mr: 0.5, color: 'text.disabled' }} />
-                  {talk.like_count || 0}
+                  {talk.likeCount ?? 0}
                 </Typography>
                 <Typography variant="body2" color="text.secondary" sx={{ display: 'flex', alignItems: 'center', ml: 1 }}>
                   <FavoriteIcon fontSize="small" sx={{ mr: 0.5, color: 'text.disabled' }} />
-                  {talk.support_count || 0}
+                  {talk.supportCount ?? 0}
                 </Typography>
               </>
             ) : (
@@ -199,7 +199,7 @@ const TalkItem: React.FC<TalkItemProps> = ({ talk, onReaction, currentMemberId, 
                   startIcon={talk.didILike ? <ThumbUpAltIcon /> : <ThumbUpOffAltIcon />}
                   onClick={() => onReaction(talk.id, 'LIKE', talk.didILike)}
                 >
-                  {talk.like_count}
+                  {talk.likeCount}
                 </Button>
                 <Button
                   size="small"
@@ -207,7 +207,7 @@ const TalkItem: React.FC<TalkItemProps> = ({ talk, onReaction, currentMemberId, 
                   startIcon={talk.didISupport ? <FavoriteIcon /> : <FavoriteBorderIcon />}
                   onClick={() => onReaction(talk.id, 'SUPPORT', talk.didISupport)}
                 >
-                  {talk.support_count}
+                  {talk.supportCount}
                 </Button>
               </>
             )}

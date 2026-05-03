@@ -66,8 +66,8 @@ export const useMyTalks = (isLoggedIn: boolean) => {
             setTalks(prev => prev.map(talk => {
                 if (talk.id !== talkId) return talk;
 
-                let likeCount = talk.like_count ?? 0;
-                let supportCount = talk.support_count ?? 0;
+                let likeCount = talk.likeCount ?? 0;
+                let supportCount = talk.supportCount ?? 0;
                 let didILike = talk.didILike;
                 let didISupport = talk.didISupport;
 
@@ -81,8 +81,8 @@ export const useMyTalks = (isLoggedIn: boolean) => {
 
                 return {
                     ...talk,
-                    like_count: likeCount,
-                    support_count: supportCount,
+                    likeCount: likeCount,
+                    supportCount: supportCount,
                     didILike,
                     didISupport
                 };
