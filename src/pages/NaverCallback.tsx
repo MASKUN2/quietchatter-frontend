@@ -56,7 +56,7 @@ const NaverCallback: React.FC = () => {
     try {
       const response = await loginWithNaver(code, state);
 
-      if (response.isRegistered) {
+      if (response.registered) {
         await completeLogin('반갑습니다! 로그인되었습니다.');
       } else {
         // 미가입: 회원가입 모달 오픈

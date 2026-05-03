@@ -1,12 +1,16 @@
 import { apiClient } from './client';
-import type { Member, Schemas } from '../types';
+import type { Member } from '../types';
 
 export async function getMe(): Promise<Member> {
   const response = await apiClient.get<Member>('/api/auth/me');
   return response.data;
 }
 
-export type NaverLoginResponse = Schemas['NaverLoginResponse'];
+export interface NaverLoginResponse {
+  registered: boolean;
+  registerToken?: string | null;
+  tempNickname?: string | null;
+}
 
 export async function loginWithNaver(code: string, state: string): Promise<NaverLoginResponse> {
   const response = await apiClient.post<NaverLoginResponse>('/api/auth/login/naver', { code, state });
