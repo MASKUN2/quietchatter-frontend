@@ -1,3 +1,10 @@
+# [1.6.0](https://github.com/MASKUN2/quietchatter-frontend/compare/v1.5.3...v1.6.0) (2026-05-03)
+
+
+### Features
+
+* implement infinite onboarding loop with version control and opt-out snackbar ([a53149f](https://github.com/MASKUN2/quietchatter-frontend/commit/a53149f2106ae9a3119ace08a93185f049ce3a10))
+
 ## [1.5.3](https://github.com/MASKUN2/quietchatter-frontend/compare/v1.5.2...v1.5.3) (2026-05-03)
 
 
