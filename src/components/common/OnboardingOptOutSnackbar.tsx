@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Snackbar, Typography, Checkbox, FormControlLabel, Paper, Box } from '@mui/material';
+import { Snackbar, Typography, Checkbox, FormControlLabel, Paper, Box, Fade } from '@mui/material';
 
 interface Props {
     /** 3초가 지난 뒤 체크 상태를 전달하며 호출됨 */
@@ -11,6 +11,7 @@ const DURATION_MS = 5000;
 const OnboardingOptOutSnackbar: React.FC<Props> = ({ onTimeout }) => {
     const [isChecked, setIsChecked] = useState(false);
     const isCheckedRef = useRef(isChecked);
+    const [open, setOpen] = useState(true);
 
     // 최신 체크 상태를 ref에 동기화
     useEffect(() => {
@@ -19,22 +20,24 @@ const OnboardingOptOutSnackbar: React.FC<Props> = ({ onTimeout }) => {
 
     useEffect(() => {
         const timer = setTimeout(() => {
-            onTimeout(isCheckedRef.current);
+            setOpen(false); // Trigger fade out animation
         }, DURATION_MS);
 
         return () => clearTimeout(timer);
-    }, [onTimeout]);
+    }, []);
 
     return (
         <Snackbar
-            open={true}
+            open={open}
             anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
             sx={{ mb: 4 }}
+            TransitionComponent={Fade}
+            TransitionProps={{ onExited: () => onTimeout(isCheckedRef.current) }}
         >
             <Paper elevation={4} sx={{ px: 1.5, py: 1, maxWidth: 240, overflow: 'hidden', position: 'relative', borderRadius: 1.5, backgroundColor: 'primary.main', color: '#fff' }}>
                 <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 1 }}>
                     <Typography variant="caption" sx={{ fontWeight: 600, color: '#fff', lineHeight: 1.3 }}>
-                        온보딩 가이드는 계속 해드릴게요.
+                        앞으로 계속 알려드릴게요.
                     </Typography>
                     <FormControlLabel
                         control={
