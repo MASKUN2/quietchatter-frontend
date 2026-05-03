@@ -6,7 +6,7 @@ interface Props {
     onTimeout: (isChecked: boolean) => void;
 }
 
-const DURATION_MS = 3000;
+const DURATION_MS = 5000;
 const INTERVAL_MS = 30;
 
 const OnboardingOptOutSnackbar: React.FC<Props> = ({ onTimeout }) => {
@@ -41,8 +41,8 @@ const OnboardingOptOutSnackbar: React.FC<Props> = ({ onTimeout }) => {
             anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
             sx={{ mb: 4 }}
         >
-            <Paper elevation={4} sx={{ p: 2, minWidth: 320, overflow: 'hidden', position: 'relative', borderRadius: 2 }}>
-                <Typography variant="body1" sx={{ mb: 1.5, fontWeight: 600, color: 'text.primary' }}>
+            <Paper elevation={4} sx={{ p: 2, minWidth: 320, overflow: 'hidden', position: 'relative', borderRadius: 2, backgroundColor: 'primary.main', color: '#fff' }}>
+                <Typography variant="body1" sx={{ mb: 1.5, fontWeight: 600, color: '#fff' }}>
                     온보딩 가이드를 계속 해드릴게요.
                 </Typography>
                 <FormControlLabel
@@ -52,14 +52,14 @@ const OnboardingOptOutSnackbar: React.FC<Props> = ({ onTimeout }) => {
                             checked={isChecked}
                             onChange={(e) => setIsChecked(e.target.checked)}
                             sx={{
-                                color: 'primary.main',
+                                color: 'rgba(255, 255, 255, 0.7)',
                                 '&.Mui-checked': {
-                                    color: 'primary.main',
+                                    color: '#fff',
                                 },
                             }}
                         />
                     }
-                    label={<Typography variant="body2" color="text.secondary">다시 보지 않기</Typography>}
+                    label={<Typography variant="body2" sx={{ color: 'rgba(255, 255, 255, 0.9)' }}>다시 보지 않기</Typography>}
                     sx={{ mb: 1, ml: -0.5 }}
                 />
                 <LinearProgress
@@ -73,9 +73,9 @@ const OnboardingOptOutSnackbar: React.FC<Props> = ({ onTimeout }) => {
                         height: 4,
                         borderBottomLeftRadius: 8,
                         borderBottomRightRadius: 8,
-                        backgroundColor: 'rgba(92, 45, 145, 0.1)',
+                        backgroundColor: 'rgba(255, 255, 255, 0.2)',
                         '& .MuiLinearProgress-bar': {
-                            backgroundColor: 'primary.main',
+                            backgroundColor: '#fff',
                             transition: 'transform 30ms linear',
                         }
                     }}

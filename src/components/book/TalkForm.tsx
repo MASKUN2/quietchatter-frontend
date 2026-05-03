@@ -52,9 +52,6 @@ const TalkForm: React.FC<TalkFormProps> = ({ content, setContent, onSubmit, nick
     setShowOptOut(false);
     if (isChecked) {
       optOut();
-    } else {
-      // Restart loop
-      setTimeout(() => setShowOnboarding(true), 500);
     }
   };
   // ──────────────────────────────────────────────────────────────────────

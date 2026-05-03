@@ -116,11 +116,6 @@ const HomeOnboarding: React.FC = () => {
         setShowOptOut(false);
         if (isChecked) {
             optOut();
-        } else {
-            // 다시 처음부터 시작 (약간의 대기 후)
-            timerRef.current = setTimeout(() => {
-                setActiveIndex(0);
-            }, 500);
         }
     };
 
