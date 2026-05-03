@@ -72,9 +72,13 @@ API 및 데이터 로직:
 
 ## 개발 워크플로우
 
-API 연동:
-- 타입을 수동으로 수정하지 않는다. 백엔드 변경 시 npm run gen:types를 실행한다.
-- src/api/api.ts를 업데이트할 때 자동 생성된 타입을 엄격히 적용한다.
+API 타입 동기화:
+- src/types/api-schema.d.ts는 자동 생성 파일이다. 직접 수정하지 않는다.
+- 백엔드 API가 변경되면 npm run gen:types를 실행하여 타입을 재생성한다.
+- 스펙 출처: https://api.quiet-chatter.com/api/docs/openapi.yaml (API Gateway 집계 엔드포인트)
+- 생성된 스키마명은 서비스 접두사를 포함한다: Book_BookResponse, Talk_TalkPageResponse, Member_AuthMeResponse 등.
+- src/types/index.ts에서 이 스키마 타입을 래핑하여 앱 전반에서 사용하는 도메인 타입(Book, Talk, Member)을 정의한다.
+- 타입 재생성 후 npm run build로 TypeScript 컴파일 오류가 없는지 반드시 확인한다.
 
 검증 체크리스트:
 - 빌드 테스트: npm run build 실행 시 에러가 없어야 한다.
