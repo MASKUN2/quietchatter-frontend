@@ -1,3 +1,10 @@
+## [1.8.4](https://github.com/MASKUN2/quietchatter-frontend/compare/v1.8.3...v1.8.4) (2026-05-03)
+
+
+### Bug Fixes
+
+* replace snake_case field aliases with camelCase in Talk type usages ([99fbb19](https://github.com/MASKUN2/quietchatter-frontend/commit/99fbb19af2d5379316b686255a7c036a5d17c8f4))
+
 ## [1.8.3](https://github.com/MASKUN2/quietchatter-frontend/compare/v1.8.2...v1.8.3) (2026-05-03)
 
 
