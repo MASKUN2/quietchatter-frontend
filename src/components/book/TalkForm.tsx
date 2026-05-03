@@ -4,7 +4,8 @@ import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import CharacterLimitedTextField from '../common/CharacterLimitedTextField';
 import OnboardingTooltip from '../common/OnboardingTooltip';
-import { useFirstVisit, VISIT_KEYS } from '../../hooks/useFirstVisit';
+import { useOnboardingState, VISIT_KEYS } from '../../hooks/useFirstVisit';
+import OnboardingOptOutSnackbar from '../common/OnboardingOptOutSnackbar';
 
 interface TalkFormProps {
   content: string;
@@ -23,8 +24,9 @@ const TalkForm: React.FC<TalkFormProps> = ({ content, setContent, onSubmit, nick
   const today = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
 
   // ── 온보딩 툴팁: 책 상세 페이지 최초 방문 시 1회 표시 ────────────────
-  const { isFirstVisit, markVisited } = useFirstVisit(VISIT_KEYS.BOOK_DETAIL);
-  const [showOnboarding, setShowOnboarding] = useState(isFirstVisit);
+  const { shouldShow, optOut } = useOnboardingState(VISIT_KEYS.BOOK_DETAIL);
+  const [showOnboarding, setShowOnboarding] = useState(shouldShow);
+  const [showOptOut, setShowOptOut] = useState(false);
   // callback ref 패턴: DOM 마운트 후 anchorEl이 확정되면 Popper가 올바른 위치를 계산합니다
   const [clockAnchorEl, setClockAnchorEl] = useState<HTMLElement | null>(null);
   const clockRowRef = useCallback((node: HTMLElement | null) => {
@@ -33,17 +35,28 @@ const TalkForm: React.FC<TalkFormProps> = ({ content, setContent, onSubmit, nick
 
 
   useEffect(() => {
-    if (!isFirstVisit) return;
+    if (!shouldShow) return;
 
+    // Reset showOnboarding if shouldShow changes (e.g. restarts)
+    setShowOnboarding(true);
+    
     const timer = setTimeout(() => {
       setShowOnboarding(false);
-      markVisited();
+      setShowOptOut(true);
     }, TALK_ONBOARDING_DISPLAY_MS);
 
     return () => clearTimeout(timer);
-    // markVisited는 렌더 간 동일 함수이므로 의존성에서 제외합니다
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isFirstVisit]);
+  }, [shouldShow]);
+
+  const handleOptOutTimeout = (isChecked: boolean) => {
+    setShowOptOut(false);
+    if (isChecked) {
+      optOut();
+    } else {
+      // Restart loop
+      setTimeout(() => setShowOnboarding(true), 500);
+    }
+  };
   // ──────────────────────────────────────────────────────────────────────
 
   return (
@@ -81,10 +94,12 @@ const TalkForm: React.FC<TalkFormProps> = ({ content, setContent, onSubmit, nick
       {/* 최초 방문 온보딩 플로팅 툴팁 */}
       <OnboardingTooltip
         anchorEl={clockAnchorEl}
-        open={showOnboarding}
+        open={showOnboarding && shouldShow && !showOptOut}
         message="⏳ 작성한 북톡은 1년 후 자동으로 숨겨져요. 시계 아이콘에 마우스를 올리면 언제든 확인할 수 있어요!"
         placement="bottom-start"
       />
+
+      {shouldShow && showOptOut && <OnboardingOptOutSnackbar onTimeout={handleOptOutTimeout} />}
 
       <form onSubmit={onSubmit}>
         <CharacterLimitedTextField

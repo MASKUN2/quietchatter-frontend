@@ -1,7 +1,8 @@
 import { useEffect, useState, useRef } from 'react';
 import OnboardingTooltip from '../common/OnboardingTooltip';
-import { useFirstVisit, VISIT_KEYS } from '../../hooks/useFirstVisit';
+import { useOnboardingState, VISIT_KEYS } from '../../hooks/useFirstVisit';
 import { useOnboardingRefs } from '../../hooks/useOnboarding';
+import OnboardingOptOutSnackbar from '../common/OnboardingOptOutSnackbar';
 
 /**
  * 각 툴팁 설정을 나타내는 타입.
@@ -67,13 +68,14 @@ const GAP_BETWEEN_MS = 500;
  * - 모든 툴팁이 완료되면 localStorage에 방문 기록을 저장합니다.
  */
 const HomeOnboarding: React.FC = () => {
-    const { isFirstVisit, markVisited } = useFirstVisit(VISIT_KEYS.HOME);
+    const { shouldShow, optOut } = useOnboardingState(VISIT_KEYS.HOME);
     const refs = useOnboardingRefs();
     const [activeIndex, setActiveIndex] = useState<number>(-1);
+    const [showOptOut, setShowOptOut] = useState<boolean>(false);
     const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
     useEffect(() => {
-        if (!isFirstVisit) return;
+        if (!shouldShow) return;
 
         // 첫 번째 툴팁 표시 (cascading render 방지를 위해 microtask 이후 실행)
         const timeout = setTimeout(() => {
@@ -84,7 +86,7 @@ const HomeOnboarding: React.FC = () => {
             clearTimeout(timeout);
             if (timerRef.current) clearTimeout(timerRef.current);
         };
-    }, [isFirstVisit]);
+    }, [shouldShow]);
 
     useEffect(() => {
         if (activeIndex < 0) return;
@@ -99,21 +101,34 @@ const HomeOnboarding: React.FC = () => {
                     setActiveIndex(nextIndex);
                 }, GAP_BETWEEN_MS);
             } else {
-                // 모든 툴팁 완료 → 방문 기록 저장
+                // 모든 툴팁 완료 → 스낵바 표시
                 setActiveIndex(-1);
-                markVisited();
+                setShowOptOut(true);
             }
         }, DISPLAY_DURATION_MS);
 
         return () => {
             if (timerRef.current) clearTimeout(timerRef.current);
         };
-    }, [activeIndex, markVisited]);
+    }, [activeIndex]);
 
-    if (!isFirstVisit) return null;
+    const handleOptOutTimeout = (isChecked: boolean) => {
+        setShowOptOut(false);
+        if (isChecked) {
+            optOut();
+        } else {
+            // 다시 처음부터 시작 (약간의 대기 후)
+            timerRef.current = setTimeout(() => {
+                setActiveIndex(0);
+            }, 500);
+        }
+    };
+
+    if (!shouldShow) return null;
 
     return (
         <>
+            {showOptOut && <OnboardingOptOutSnackbar onTimeout={handleOptOutTimeout} />}
             {TOOLTIP_STEPS.map((step, index) => {
                 const anchorEl = refs[step.refKey]?.current ?? null;
                 return (
