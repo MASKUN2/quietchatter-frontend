@@ -1,3 +1,10 @@
+## [1.5.3](https://github.com/MASKUN2/quietchatter-frontend/compare/v1.5.2...v1.5.3) (2026-05-03)
+
+
+### Bug Fixes
+
+* header login button skeleton issue ([ab41ab1](https://github.com/MASKUN2/quietchatter-frontend/commit/ab41ab1a4d385a88edb6fca8017e18436d76b886))
+
 ## [1.5.2](https://github.com/MASKUN2/quietchatter-frontend/compare/v1.5.1...v1.5.2) (2026-05-02)
 
 
