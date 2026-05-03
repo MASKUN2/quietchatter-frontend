@@ -1,3 +1,10 @@
+# [1.7.0](https://github.com/MASKUN2/quietchatter-frontend/compare/v1.6.0...v1.7.0) (2026-05-03)
+
+
+### Features
+
+* change onboarding loop to once per visit and update snackbar style ([92b85c9](https://github.com/MASKUN2/quietchatter-frontend/commit/92b85c9dd3b7ad35f683139c64c1daa4db1941e9))
+
 # [1.6.0](https://github.com/MASKUN2/quietchatter-frontend/compare/v1.5.3...v1.6.0) (2026-05-03)
 
 
