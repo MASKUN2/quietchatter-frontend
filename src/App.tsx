@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { Box } from '@mui/material';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
@@ -20,6 +20,7 @@ import ProfileEditPage from './pages/MyPage/ProfileEditPage';
 import { OnboardingProvider } from './context/OnboardingContext';
 import { useOnboardingRefsState } from './hooks/useOnboarding';
 import { ToastProvider } from './providers/ToastProvider';
+import { useAuthStore } from './store/useAuthStore';
 
 const theme = createTheme({
   palette: {
@@ -86,9 +87,14 @@ const theme = createTheme({
 });
 
 const AppContent: React.FC = () => {
+  const { refreshMember } = useAuthStore();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   const onboardingRefs = useOnboardingRefsState();
+
+  useEffect(() => {
+    refreshMember();
+  }, [refreshMember]);
 
   return (
     <OnboardingProvider refs={onboardingRefs}>

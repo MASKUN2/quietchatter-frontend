@@ -18,6 +18,7 @@ export const useAuthStore = create<AuthState>()(
       loading: true,
       setMember: (member) => set({ member, loading: false }),
       refreshMember: async () => {
+        set({ loading: true });
         try {
           const memberData = await getMe();
           set({ member: memberData, loading: false });
