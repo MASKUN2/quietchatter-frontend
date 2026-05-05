@@ -33,6 +33,7 @@ src/ 디렉토리 구조:
 - App.tsx에서 전체 레이아웃을 중앙 집중 관리한다.
 - 개별 페이지는 Container나 Header를 포함하지 않고 PagePaper 컴포넌트로 본문만 감싼다.
 - 새로운 레이아웃 블록 사이의 간격은 spacing={xs: 2, md: 4} 규격을 사용한다.
+- 모든 페이지 컴포넌트는 React.lazy로 지연 로딩되며 Suspense로 감싸 라우트 기반 코드 스플리팅을 적용한다.
 
 상태 관리 전략:
 - UI 전용 상태는 useState를 우선 사용한다.
@@ -90,6 +91,9 @@ API 타입 동기화:
 - 생성된 스키마명은 서비스 접두사를 포함한다: Book_BookResponse, Talk_TalkPageResponse, Member_AuthMeResponse 등.
 - src/types/index.ts에서 이 스키마 타입을 래핑하여 앱 전반에서 사용하는 도메인 타입(Book, Talk, Member)을 정의한다.
 - 타입 재생성 후 npm run build로 TypeScript 컴파일 오류가 없는지 반드시 확인한다.
+
+환경변수:
+- VITE_API_URL: 개발 프록시 타겟 URL. 미설정 시 https://dev-api.quiet-chatter.com 을 기본값으로 사용한다.
 
 검증 체크리스트:
 - 빌드 테스트: npm run build 실행 시 에러가 없어야 한다.

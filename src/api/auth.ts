@@ -18,7 +18,7 @@ export async function loginWithNaver(code: string, state: string): Promise<Naver
 }
 
 export async function signupWithNaver(nickname: string, registerToken: string): Promise<void> {
-  await apiClient.post('/api/auth/signup', 
+  await apiClient.post('/api/auth/signup',
     { nickname },
     { headers: { Authorization: `Bearer ${registerToken}` } }
   );
