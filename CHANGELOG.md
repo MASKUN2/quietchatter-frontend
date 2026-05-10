@@ -1,3 +1,10 @@
+## [1.10.1](https://github.com/MASKUN2/quietchatter-frontend/compare/v1.10.0...v1.10.1) (2026-05-10)
+
+
+### Bug Fixes
+
+* **talk-item:** prevent dialog content flicker on close ([b9ab7a3](https://github.com/MASKUN2/quietchatter-frontend/commit/b9ab7a389e591abe6391b53d10402edbb7d520fc))
+
 # [1.10.0](https://github.com/MASKUN2/quietchatter-frontend/compare/v1.9.1...v1.10.0) (2026-05-10)
 
 
