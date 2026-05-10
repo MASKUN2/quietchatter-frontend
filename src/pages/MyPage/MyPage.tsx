@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Box, Typography, Button, CircularProgress, Stack, Divider } from '@mui/material';
+import { Box, Typography, Button, CircularProgress, Stack, Divider, Tabs, Tab } from '@mui/material';
 import PagePaper from '../../components/common/PagePaper';
 import TalkItem from '../../components/book/TalkItem';
 import WithdrawalDialog from './components/WithdrawalDialog';
@@ -11,9 +11,11 @@ const MyPage: React.FC = () => {
     const { member } = useAuthStore();
     const navigate = useNavigate();
     const [isWithdrawalOpen, setIsWithdrawalOpen] = useState(false);
+    const [tabIndex, setTabIndex] = useState(0);
 
     const isLoggedIn = !!member?.isLoggedIn;
-    const { talks, loading, hasMore, loadMore, handleTalkReaction, refresh } = useMyTalks(isLoggedIn);
+    const isHiddenTab = tabIndex === 1;
+    const { talks, loading, hasMore, loadMore, handleTalkReaction, handleRestoreTalk, refresh } = useMyTalks(isLoggedIn, isHiddenTab);
 
     useEffect(() => {
         if (!member) {
@@ -74,6 +76,15 @@ const MyPage: React.FC = () => {
                 </Typography>
             </Box>
 
+            <Tabs
+                value={tabIndex}
+                onChange={(_, newValue: number) => setTabIndex(newValue)}
+                sx={{ mb: 2, borderBottom: 1, borderColor: 'divider' }}
+            >
+                <Tab label="공개" sx={{ textTransform: 'none', fontWeight: 600 }} />
+                <Tab label="숨겨진" sx={{ textTransform: 'none', fontWeight: 600 }} />
+            </Tabs>
+
             {loading ? (
                 <Box sx={{ display: 'flex', justifyContent: 'center', py: 4 }}>
                     <CircularProgress />
@@ -82,7 +93,7 @@ const MyPage: React.FC = () => {
                 <Stack spacing={3}>
                     {talks.length === 0 ? (
                         <Typography color="text.secondary" align="center" sx={{ py: 4 }}>
-                            작성한 톡이 없습니다.
+                            {isHiddenTab ? '숨겨진 톡이 없습니다.' : '작성한 톡이 없습니다.'}
                         </Typography>
                     ) : (
                         talks.map(talk => (
@@ -91,7 +102,9 @@ const MyPage: React.FC = () => {
                                     talk={talk}
                                     showBookInfo={true}
                                     isMyPageMode={true}
+                                    isHiddenMode={isHiddenTab}
                                     onReaction={handleTalkReaction}
+                                    onRestore={handleRestoreTalk}
                                     currentMemberId={member.id}
                                     onUpdate={refresh}
                                 />

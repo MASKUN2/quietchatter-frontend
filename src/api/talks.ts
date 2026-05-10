@@ -14,11 +14,15 @@ export async function getRecommendedTalks(): Promise<Talk[]> {
   return response.data;
 }
 
-export async function getMyTalks(memberId: string, page: number = 0): Promise<PageResponse<Talk>> {
+export async function getMyTalks(memberId: string, page: number = 0, hidden = false): Promise<PageResponse<Talk>> {
   const response = await apiClient.get<PageResponse<Talk>>('/api/talks', {
-    params: { memberId, page, size: PAGINATION.TALK_LIST_SIZE, sort: 'createdAt,desc' }
+    params: { memberId, page, size: PAGINATION.TALK_LIST_SIZE, sort: 'createdAt,desc', hidden }
   });
   return response.data;
+}
+
+export async function restoreTalk(talkId: string): Promise<void> {
+  await apiClient.post(`/api/talks/${talkId}/restore`);
 }
 
 export async function postTalk(bookId: string, content: string): Promise<Talk> {

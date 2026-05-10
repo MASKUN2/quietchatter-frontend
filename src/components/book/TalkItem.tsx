@@ -21,13 +21,15 @@ interface TalkItemProps {
   onUpdate: () => void;
   showBookInfo?: boolean;
   isMyPageMode?: boolean;
+  isHiddenMode?: boolean;
+  onRestore?: (talkId: string) => void;
 }
 const formatDate = (dateString: string) => {
   const d = new Date(dateString);
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
 };
 
-const TalkItem: React.FC<TalkItemProps> = ({ talk, onReaction, currentMemberId, onUpdate, showBookInfo, isMyPageMode }) => {
+const TalkItem: React.FC<TalkItemProps> = ({ talk, onReaction, currentMemberId, onUpdate, showBookInfo, isMyPageMode, isHiddenMode, onRestore }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [editContent, setEditContent] = useState(talk.content);
   const [loading, setLoading] = useState(false);
@@ -158,7 +160,20 @@ const TalkItem: React.FC<TalkItemProps> = ({ talk, onReaction, currentMemberId, 
             <Typography variant="body1" sx={{ flexGrow: 1, whiteSpace: 'pre-wrap' }}>
               {talk.content}
             </Typography>
-            {isMine && !isMyPageMode && (
+            {isMine && isHiddenMode && (
+              <Box sx={{ ml: 1, mt: -0.5 }}>
+                <Button
+                  size="small"
+                  variant="outlined"
+                  disabled={loading}
+                  onClick={() => onRestore?.(talk.id)}
+                  sx={{ textTransform: 'none', color: 'primary.main', borderColor: 'primary.main' }}
+                >
+                  숨김 해제
+                </Button>
+              </Box>
+            )}
+            {isMine && !isMyPageMode && !isHiddenMode && (
               <Box sx={{ ml: 1, mt: -0.5 }}>
                 <IconButton size="small" onClick={() => setIsEditing(true)}>
                   <EditIcon fontSize="small" />
@@ -168,7 +183,7 @@ const TalkItem: React.FC<TalkItemProps> = ({ talk, onReaction, currentMemberId, 
                 </IconButton>
               </Box>
             )}
-            {isMine && isMyPageMode && (
+            {isMine && isMyPageMode && !isHiddenMode && (
               <Box sx={{ ml: 1, mt: -0.5 }}>
                 <IconButton size="small" onClick={handleDelete} color="error">
                   <DeleteIcon fontSize="small" />

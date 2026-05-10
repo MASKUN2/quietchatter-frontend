@@ -1,12 +1,12 @@
 import { useState, useEffect, useCallback } from 'react';
-import { getMyTalks, handleReaction } from '../api/talks';
+import { getMyTalks, handleReaction, restoreTalk } from '../api/talks';
 import { getBooksByIds } from '../api/books';
 import type { Talk } from '../types';
 import { useToast } from './useToast';
 import { useAuthStore } from '../store/useAuthStore';
 import { MESSAGES } from '../constants';
 
-export const useMyTalks = (isLoggedIn: boolean) => {
+export const useMyTalks = (isLoggedIn: boolean, hidden = false) => {
     const { showToast } = useToast();
     const { member } = useAuthStore();
 
@@ -20,7 +20,7 @@ export const useMyTalks = (isLoggedIn: boolean) => {
 
         try {
             if (isInitial) setLoading(true);
-            const data = await getMyTalks(member.id, pageNum);
+            const data = await getMyTalks(member.id, pageNum, hidden);
 
             const bookIds = Array.from(new Set(data.content.map(t => t.bookId)));
             const booksData = await getBooksByIds(bookIds);
@@ -46,13 +46,14 @@ export const useMyTalks = (isLoggedIn: boolean) => {
         } finally {
             if (isInitial) setLoading(false);
         }
-    }, [member?.id]);
+    }, [member?.id, hidden]);
 
     useEffect(() => {
         if (isLoggedIn) {
+            setPage(0);
             fetchTalks(0, true);
         }
-    }, [isLoggedIn, fetchTalks]);
+    }, [isLoggedIn, hidden, fetchTalks]);
 
     const loadMore = useCallback(() => {
         const nextPage = page + 1;
@@ -101,5 +102,18 @@ export const useMyTalks = (isLoggedIn: boolean) => {
         fetchTalks(0, true);
     }, [fetchTalks]);
 
-    return { talks, loading, hasMore, loadMore, handleTalkReaction, refresh };
+    const handleRestoreTalk = useCallback(async (talkId: string) => {
+        try {
+            await restoreTalk(talkId);
+            refresh();
+        } catch (error: unknown) {
+            if (error instanceof Error) {
+                showToast(error.message, 'error');
+            } else {
+                showToast('숨김 해제에 실패했습니다.', 'error');
+            }
+        }
+    }, [refresh, showToast]);
+
+    return { talks, loading, hasMore, loadMore, handleTalkReaction, handleRestoreTalk, refresh };
 };
