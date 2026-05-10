@@ -1,3 +1,10 @@
+# [1.9.0](https://github.com/MASKUN2/quietchatter-frontend/compare/v1.8.5...v1.9.0) (2026-05-10)
+
+
+### Features
+
+* **mypage:** add hidden talk tab and restore functionality ([fc9a70c](https://github.com/MASKUN2/quietchatter-frontend/commit/fc9a70c293644bd0a81f747c24438ce9547b5a44))
+
 ## [1.8.5](https://github.com/MASKUN2/quietchatter-frontend/compare/v1.8.4...v1.8.5) (2026-05-03)
 
 
