@@ -22,6 +22,8 @@ export const MESSAGES = {
     TALK_POST_FAILED: '톡 등록 중 오류가 발생했습니다.',
     TALK_UPDATE_FAILED: '수정에 실패했습니다.',
     TALK_DELETE_FAILED: '삭제에 실패했습니다.',
+    TALK_HIDE_FAILED: '숨김 처리에 실패했습니다.',
+    TALK_RESTORE_FAILED: '숨김 해제에 실패했습니다.',
     REACTION_FAILED: '반응 처리 중 오류가 발생했습니다.',
     VOC_SEND_FAILED: '메시지 전송에 실패했습니다.',
     LOGIN_REQUIRED: '로그인이 필요한 기능입니다.',
@@ -32,6 +34,8 @@ export const MESSAGES = {
   },
   SUCCESS: {
     VOC_SENT: '소중한 의견 감사합니다!',
-    TALK_DELETED: '성공적으로 삭제되었습니다.',
+    TALK_DELETED: '톡이 삭제되었습니다.',
+    TALK_HIDDEN: '톡이 숨김 처리되었습니다.',
+    TALK_RESTORED: '톡이 다시 공개되었습니다.',
   },
 } as const;

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Card, CardContent, Typography, Box, Button, IconButton, Stack, Tooltip, Avatar } from '@mui/material';
+import { Card, CardContent, Typography, Box, Button, IconButton, Stack, Tooltip, Avatar, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions } from '@mui/material';
 import { Link } from 'react-router-dom';
 import ThumbUpAltIcon from '@mui/icons-material/ThumbUpAlt';
 import FavoriteIcon from '@mui/icons-material/Favorite';
@@ -8,6 +8,7 @@ import ThumbUpOffAltIcon from '@mui/icons-material/ThumbUpOffAlt';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
+import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import { updateTalk, deleteTalk } from '../../api/talks';
 import type { Talk } from '../../types';
 import CharacterLimitedTextField from '../common/CharacterLimitedTextField';
@@ -33,6 +34,7 @@ const TalkItem: React.FC<TalkItemProps> = ({ talk, onReaction, currentMemberId, 
   const [isEditing, setIsEditing] = useState(false);
   const [editContent, setEditContent] = useState(talk.content);
   const [loading, setLoading] = useState(false);
+  const [confirmType, setConfirmType] = useState<'hide' | 'delete' | 'restore' | null>(null);
   const { showToast } = useToast();
 
   const isMine = currentMemberId && String(talk.memberId) === String(currentMemberId);
@@ -59,20 +61,25 @@ const TalkItem: React.FC<TalkItemProps> = ({ talk, onReaction, currentMemberId, 
     }
   };
 
-  const handleDelete = async () => {
-    if (!window.confirm('정말 삭제하시겠습니까?')) return;
+  const handleConfirm = async () => {
+    const type = confirmType;
+    setConfirmType(null);
+
+    if (type === 'restore') {
+      onRestore?.(talk.id);
+      return;
+    }
 
     setLoading(true);
     try {
       await deleteTalk(talk.id);
-      showToast(MESSAGES.SUCCESS.TALK_DELETED, 'success');
+      showToast(type === 'hide' ? MESSAGES.SUCCESS.TALK_HIDDEN : MESSAGES.SUCCESS.TALK_DELETED, 'success');
       onUpdate();
     } catch (error: unknown) {
-      if (error instanceof Error) {
-        showToast(error.message, 'error');
-      } else {
-        showToast(MESSAGES.ERROR.TALK_DELETE_FAILED, 'error');
-      }
+      showToast(
+        error instanceof Error ? error.message : type === 'hide' ? MESSAGES.ERROR.TALK_HIDE_FAILED : MESSAGES.ERROR.TALK_DELETE_FAILED,
+        'error'
+      );
       setLoading(false);
     }
   };
@@ -166,7 +173,7 @@ const TalkItem: React.FC<TalkItemProps> = ({ talk, onReaction, currentMemberId, 
                   size="small"
                   variant="outlined"
                   disabled={loading}
-                  onClick={() => onRestore?.(talk.id)}
+                  onClick={() => setConfirmType('restore')}
                   sx={{ textTransform: 'none', color: 'primary.main', borderColor: 'primary.main' }}
                 >
                   숨김 해제
@@ -178,16 +185,18 @@ const TalkItem: React.FC<TalkItemProps> = ({ talk, onReaction, currentMemberId, 
                 <IconButton size="small" onClick={() => setIsEditing(true)}>
                   <EditIcon fontSize="small" />
                 </IconButton>
-                <IconButton size="small" onClick={handleDelete} color="error">
+                <IconButton size="small" onClick={() => setConfirmType('delete')} color="error">
                   <DeleteIcon fontSize="small" />
                 </IconButton>
               </Box>
             )}
             {isMine && isMyPageMode && !isHiddenMode && (
               <Box sx={{ ml: 1, mt: -0.5 }}>
-                <IconButton size="small" onClick={handleDelete} color="error">
-                  <DeleteIcon fontSize="small" />
-                </IconButton>
+                <Tooltip title="숨김 처리">
+                  <IconButton size="small" onClick={() => setConfirmType('hide')} color="default">
+                    <VisibilityOffIcon fontSize="small" />
+                  </IconButton>
+                </Tooltip>
               </Box>
             )}
           </Box>
@@ -229,6 +238,29 @@ const TalkItem: React.FC<TalkItemProps> = ({ talk, onReaction, currentMemberId, 
           </Box>
         </Box>
       </CardContent>
+
+      <Dialog open={confirmType !== null} onClose={() => setConfirmType(null)} maxWidth="xs" fullWidth>
+        <DialogTitle>
+          {confirmType === 'restore' ? '숨김 해제' : confirmType === 'hide' ? '숨김 처리' : '톡 삭제'}
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            {confirmType === 'restore' && '이 톡의 숨김을 해제하시겠습니까? 공개 목록에 다시 표시됩니다.'}
+            {confirmType === 'hide' && '이 톡을 숨김 처리하시겠습니까? 숨겨진 톡은 마이페이지에서 다시 공개할 수 있습니다.'}
+            {confirmType === 'delete' && '이 톡을 삭제하시겠습니까?'}
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setConfirmType(null)} sx={{ textTransform: 'none' }}>취소</Button>
+          <Button
+            onClick={handleConfirm}
+            color={confirmType === 'restore' ? 'primary' : 'error'}
+            sx={{ textTransform: 'none' }}
+          >
+            {confirmType === 'restore' ? '해제' : confirmType === 'hide' ? '숨김' : '삭제'}
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Card>
   );
 };
