@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { Card, CardContent, Typography, Box, Button, IconButton, Stack, Tooltip, Avatar, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions } from '@mui/material';
 import { Link } from 'react-router-dom';
 import ThumbUpAltIcon from '@mui/icons-material/ThumbUpAlt';
@@ -35,6 +35,9 @@ const TalkItem: React.FC<TalkItemProps> = ({ talk, onReaction, currentMemberId, 
   const [editContent, setEditContent] = useState(talk.content);
   const [loading, setLoading] = useState(false);
   const [confirmType, setConfirmType] = useState<'hide' | 'delete' | 'restore' | null>(null);
+  const lastConfirmType = useRef(confirmType);
+  if (confirmType !== null) lastConfirmType.current = confirmType;
+  const displayType = confirmType ?? lastConfirmType.current;
   const { showToast } = useToast();
 
   const isMine = currentMemberId && String(talk.memberId) === String(currentMemberId);
@@ -241,23 +244,23 @@ const TalkItem: React.FC<TalkItemProps> = ({ talk, onReaction, currentMemberId, 
 
       <Dialog open={confirmType !== null} onClose={() => setConfirmType(null)} maxWidth="xs" fullWidth>
         <DialogTitle>
-          {confirmType === 'restore' ? '숨김 해제' : confirmType === 'hide' ? '숨김 처리' : '톡 삭제'}
+          {displayType === 'restore' ? '숨김 해제' : displayType === 'hide' ? '숨김 처리' : '톡 삭제'}
         </DialogTitle>
         <DialogContent>
           <DialogContentText>
-            {confirmType === 'restore' && '이 톡의 숨김을 해제하시겠습니까? 공개 목록에 다시 표시됩니다.'}
-            {confirmType === 'hide' && '이 톡을 숨김 처리하시겠습니까? 숨겨진 톡은 마이페이지에서 다시 공개할 수 있습니다.'}
-            {confirmType === 'delete' && '이 톡을 삭제하시겠습니까?'}
+            {displayType === 'restore' && '이 톡의 숨김을 해제하시겠습니까? 공개 목록에 다시 표시됩니다.'}
+            {displayType === 'hide' && '이 톡을 숨김 처리하시겠습니까? 숨겨진 톡은 마이페이지에서 다시 공개할 수 있습니다.'}
+            {displayType === 'delete' && '이 톡을 삭제하시겠습니까?'}
           </DialogContentText>
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setConfirmType(null)} sx={{ textTransform: 'none' }}>취소</Button>
           <Button
             onClick={handleConfirm}
-            color={confirmType === 'restore' ? 'primary' : 'error'}
+            color={displayType === 'restore' ? 'primary' : 'error'}
             sx={{ textTransform: 'none' }}
           >
-            {confirmType === 'restore' ? '해제' : confirmType === 'hide' ? '숨김' : '삭제'}
+            {displayType === 'restore' ? '해제' : displayType === 'hide' ? '숨김' : '삭제'}
           </Button>
         </DialogActions>
       </Dialog>
